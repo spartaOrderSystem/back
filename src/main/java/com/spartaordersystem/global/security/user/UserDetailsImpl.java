@@ -1,13 +1,15 @@
 package com.spartaordersystem.global.security.user;
 
 import com.spartaordersystem.domains.user.entity.User;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
 public class UserDetailsImpl implements UserDetails {
 
     private final User user;
@@ -28,6 +30,10 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public String getUsername() {
         return user.getUsername();
+    }
+
+    public String getRole() {
+        return user.getRole().getAuthority();
     }
 
     @Override
