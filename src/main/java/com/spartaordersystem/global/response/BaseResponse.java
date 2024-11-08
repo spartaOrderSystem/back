@@ -3,6 +3,7 @@ package com.spartaordersystem.global.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
 import java.time.ZoneId;
@@ -12,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import static com.spartaordersystem.global.common.GlobalConst.TIME_ZONE_ID;
 import static com.spartaordersystem.global.common.GlobalConst.TIME_ZONE_PATTERN;
 
+@ToString
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BaseResponse {

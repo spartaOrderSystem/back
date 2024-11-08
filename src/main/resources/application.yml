@@ -1,3 +1,12 @@
 spring:
-  profiles:
-    include: datasource
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    database: postgresql
+    open-in-view: false
+    hibernate:
+      ddl-auto: create-drop
