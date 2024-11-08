@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import static com.spartaordersystem.global.common.GlobalConst.TIME_ZONE_ID;
 import static com.spartaordersystem.global.common.GlobalConst.TIME_ZONE_PATTERN;
 
+@Getter
 @ToString
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
