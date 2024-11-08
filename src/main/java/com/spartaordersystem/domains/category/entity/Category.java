@@ -1,7 +1,7 @@
-package com.spartaordersystem.domains.store.entity;
+package com.spartaordersystem.domains.category.entity;
 
-import com.spartaordersystem.domains.store.enums.StoreStatus;
-import com.spartaordersystem.domains.user.entity.User;
+import com.spartaordersystem.domains.category.enums.CategoryType;
+import com.spartaordersystem.domains.store.entity.Store;
 import com.spartaordersystem.global.common.BaseAudit;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,42 +20,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
+
 @Entity
 @Getter
-@Table(name = "p_store")
+@Table(name = "p_category")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Store extends BaseAudit {
+public class Category extends BaseAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(columnDefinition = "UUID", nullable = false, unique = true)
     private UUID id;
 
-    @Column(nullable = false, length = 30)
-    private String title;
-
-    @Column(nullable = false)
-    private String address;
-
-    @Column(nullable = false)
-    private String phoneNumber;
-
-    @Column(nullable = false)
-    private ZonedDateTime openTime;
-
-    @Column(nullable = false)
-    private ZonedDateTime closeTime;
-
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private StoreStatus storeStatus = StoreStatus.CLOSE;
+    private CategoryType name;
 
     @CreatedBy
     @Column(name = "created_by", nullable = false)
@@ -69,25 +53,15 @@ public class Store extends BaseAudit {
     private String deletedBy;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "store_id", nullable = false)
+    private Store store;
 
     @Builder
-    public Store(User user, String title, String address, String phoneNumber, ZonedDateTime openTime, ZonedDateTime closeTime, StoreStatus storeStatus) {
-        this.user = user;
-        this.title = title;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
-        this.openTime = openTime;
-        this.closeTime = closeTime;
-        this.storeStatus = storeStatus;
+    public Category(CategoryType name, Store store) {
+        this.name = name;
+        this.store = store;
     }
 
-    /**
-     *  삭제 시 호출
-     *
-     *  서비스레이어에선 userId로 username을 받아올 수 있으니 파라미터를 변경해도 될듯
-     */
     public void setDeleted(String username) {
         this.deletedBy = username;
         this.deletedAt = ZonedDateTime.now();
