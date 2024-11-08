@@ -3,6 +3,7 @@ package com.spartaordersystem.domains.store.service;
 import com.spartaordersystem.domains.category.entity.Category;
 import com.spartaordersystem.domains.category.repository.CategoryRepository;
 import com.spartaordersystem.domains.store.controller.dto.CreateStoreDto;
+import com.spartaordersystem.domains.store.controller.dto.UpdateStoreDto;
 import com.spartaordersystem.domains.store.entity.Store;
 import com.spartaordersystem.domains.store.repository.StoreRepository;
 import com.spartaordersystem.domains.user.entity.User;
@@ -11,6 +12,8 @@ import com.spartaordersystem.global.exception.CustomException;
 import com.spartaordersystem.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -48,6 +51,38 @@ public class StoreService {
                 .build();
     }
 
+    public UpdateStoreDto.ResponseDto updateStore(UUID storeId, Long userId, String userRole, UpdateStoreDto.RequestDto requestDto) {
+        User user = checkUser(userId);
+        checkUserRole(userRole);
+        Category category = getCategory(requestDto);
+
+        Store store = Store.builder()
+                .title(requestDto.getTitle())
+                .address(requestDto.getAddress())
+                .openTime(requestDto.getOpenTime())
+                .closeTime(requestDto.getCloseTime())
+                .phoneNumber(requestDto.getPhoneNumber())
+                .category(category)
+                .build();
+
+        storeRepository.save(store);
+
+        return UpdateStoreDto.ResponseDto.builder()
+                .id(storeId)
+                .title(store.getTitle())
+                .address(store.getAddress())
+                .openTime(store.getOpenTime())
+                .closeTime(store.getCloseTime())
+                .phoneNumber(store.getPhoneNumber())
+                .categoryName(category.getName().name())
+                .build();
+    }
+
+    private Category getCategory(UpdateStoreDto.RequestDto requestDto) {
+        return categoryRepository.findById(requestDto.getCategoryId())
+                .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
+    }
+
     private User checkUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -62,5 +97,10 @@ public class StoreService {
     private Category getCategory(CreateStoreDto.RequestDto requestDto) {
         return categoryRepository.findById(requestDto.getCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
+    }
+
+    private Store getStore(UUID storeId) {
+        return storeRepository.findById(storeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
     }
 }
