@@ -7,7 +7,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -55,7 +54,7 @@ public class Store extends BaseAudit {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private StoreStatus storeStatus = StoreStatus.CLOSE;
+    private StoreStatus storeStatus;
 
     @CreatedBy
     @Column(name = "created_by", nullable = false)
@@ -68,7 +67,7 @@ public class Store extends BaseAudit {
     @Column(name = "deleted_by")
     private String deletedBy;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -85,8 +84,6 @@ public class Store extends BaseAudit {
 
     /**
      *  삭제 시 호출
-     *
-     *  서비스레이어에선 userId로 username을 받아올 수 있으니 파라미터를 변경해도 될듯
      */
     public void setDeleted(String username) {
         this.deletedBy = username;
