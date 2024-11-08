@@ -12,12 +12,9 @@ import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Singular;
+import lombok.*;
 
+@ToString
 @Getter
 @Entity
 @Table(name = "users", indexes = @Index(name = "idx_nickname", columnList = "nickname"))
@@ -46,5 +43,11 @@ public class User {
     @Column(nullable = false)
     private String nickname;
 
-
+    @Builder
+    public User(String username, String password, UserRoleEnum role, String nickname) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.nickname = nickname;
+    }
 }
