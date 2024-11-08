@@ -31,9 +31,6 @@ public class StoreController {
         CreateStoreDto.ResponseDto responseDto = storeService.createStore(userId, userRole, requestDto);
         BaseResponse response = BaseResponse.toSuccessResponse("가게 생성이 완료되었습니다", responseDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
-
-
-
     }
 
 
