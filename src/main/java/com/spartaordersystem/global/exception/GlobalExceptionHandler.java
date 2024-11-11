@@ -5,6 +5,10 @@ import static com.spartaordersystem.global.exception.ErrorCode.ILLEGAL_ARGUMENT_
 import com.spartaordersystem.global.dto.ExceptionResponse;
 import com.spartaordersystem.global.dto.InvalidParameterResponse;
 import java.util.List;
+import java.util.Set;
+
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -15,6 +19,28 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    //@Valid 로 발생하는 에러
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handleValidatedException(ConstraintViolationException e){
+        Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
+        StringBuilder message = new StringBuilder();
+        if(constraintViolations != null) {
+            for(ConstraintViolation c : constraintViolations){
+                String[] paths = c.getPropertyPath().toString().split("\\.");
+                String path = paths.length > 0 ? paths[paths.length - 1] : "";
+                message.append(path);
+                message.append(" : ");
+                message.append(c.getMessage());
+                message.append(". ");
+            }
+        }
+        return ResponseEntity.status(ILLEGAL_ARGUMENT_ERROR.getHttpStatus()).body(
+                ExceptionResponse.of(
+                        ILLEGAL_ARGUMENT_ERROR.getHttpStatus(),
+                        message.toString(),
+                        null));
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<ExceptionResponse<List<InvalidParameterResponse>>> methodArgNotValidException(MethodArgumentNotValidException e) {

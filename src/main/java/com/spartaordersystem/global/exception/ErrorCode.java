@@ -21,6 +21,7 @@ public enum ErrorCode {
     ACCESS_DENIED(404, "접근 권한이 없습니다."),
     USER_NOT_FOUND(404, "유저를 찾을 수 없습니다."),
     CATEGORY_NOT_FOUND(404, "카테고리를 찾을 수 없습니다."),
+    STORE_NOT_FOUND(404, "카테고리를 찾을 수 없습니다."),
 
     /*  408 REQUEST_TIMEOUT : 요청에 대한 응답 시간 초과  */
     TIMEOUT_ERROR(408, "응답시간을 초과하였습니다."),
