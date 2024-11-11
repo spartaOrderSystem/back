@@ -3,6 +3,7 @@ package com.spartaordersystem.domains.store.service;
 import com.spartaordersystem.domains.category.entity.Category;
 import com.spartaordersystem.domains.category.repository.CategoryRepository;
 import com.spartaordersystem.domains.store.controller.dto.CreateStoreDto;
+import com.spartaordersystem.domains.store.controller.dto.GetStoreDto;
 import com.spartaordersystem.domains.store.controller.dto.UpdateStoreDto;
 import com.spartaordersystem.domains.store.entity.Store;
 import com.spartaordersystem.domains.store.repository.StoreRepository;
@@ -87,8 +88,11 @@ public class StoreService {
         Store store = getStore(storeId);
         checkUserIsStoreOwner(user, store);
 
-        storeRepository.delete(store);
+        store.setDeleted(user.getUsername());
+        storeRepository.save(store);
     }
+
+
 
     private static void checkUserIsStoreOwner(User user, Store store) {
         if (!store.getUser().getId().equals(user.getId())) {
