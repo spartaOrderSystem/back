@@ -76,7 +76,7 @@ class StoreServiceTest {
         when(categoryRepository.findById(requestDto.getCategoryId())).thenReturn(Optional.of(category));
         when(storeRepository.save(any(Store.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        CreateStoreDto.ResponseDto responseDto = storeService.createStore(user.getId(), user.getRole().getAuthority(), requestDto);
+        CreateStoreDto.ResponseDto responseDto = storeService.createStore(user, user.getRole().getAuthority(), requestDto);
 
         assertNotNull(responseDto);
         assertEquals(requestDto.getTitle(), responseDto.getTitle());
@@ -109,11 +109,12 @@ class StoreServiceTest {
                 .categoryId(category.getId())
                 .build();
 
+        when(storeRepository.findById(store.getId())).thenReturn(Optional.of(store));
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(categoryRepository.findById(any(UUID.class))).thenReturn(Optional.of(category));
         when(storeRepository.save(any(Store.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        UpdateStoreDto.ResponseDto responseDto = storeService.updateStore(store.getId(), user.getId(), user.getRole().getAuthority(), updateRequestDto);
+        UpdateStoreDto.ResponseDto responseDto = storeService.updateStore(store.getId(), user, user.getRole().getAuthority(), updateRequestDto);
 
         assertNotNull(responseDto);
         assertEquals(updateRequestDto.getTitle(), responseDto.getTitle());
