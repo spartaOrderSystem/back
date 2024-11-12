@@ -6,6 +6,7 @@ import com.spartaordersystem.domains.user.entity.User;
 import com.spartaordersystem.global.common.BaseAudit;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -18,12 +19,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -33,11 +34,12 @@ import java.util.UUID;
 @Table(name = "p_store")
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Store extends BaseAudit {
 
     @Id
     @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @UuidGenerator
     @JdbcTypeCode(SqlTypes.CHAR)
     @Column(nullable = false, length = 36, unique = true) // uuid 값이 36자의 문자열로 저장됨
     private UUID id;
@@ -61,6 +63,9 @@ public class Store extends BaseAudit {
     @Enumerated(EnumType.STRING)
     private StoreStatus storeStatus = StoreStatus.CLOSE;
 
+    @Column(nullable = false)
+    private boolean isDeleted = false;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -68,14 +73,6 @@ public class Store extends BaseAudit {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
-
-    @CreatedBy
-    @Column(name = "created_by", nullable = false)
-    private String createdBy;
-
-    @LastModifiedBy
-    @Column(name = "updated_by")
-    private String updated_by;
 
     @Column(name = "deleted_by")
     private String deletedBy;
@@ -96,12 +93,21 @@ public class Store extends BaseAudit {
     }
 
     /**
+     * 테스트용 메서드
+     */
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+    /**
      *  삭제 시 호출
-     *
-     *  서비스레이어에선 userId로 username을 받아올 수 있으니 파라미터를 변경해도 될듯
      */
     public void setDeleted(String username) {
         this.deletedBy = username;
         this.deletedAt = ZonedDateTime.now();
+        this.isDeleted = true;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }
