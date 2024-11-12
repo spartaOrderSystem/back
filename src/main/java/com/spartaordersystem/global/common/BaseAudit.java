@@ -1,9 +1,14 @@
 package com.spartaordersystem.global.common;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.Getter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -16,11 +21,19 @@ import static com.spartaordersystem.global.common.GlobalConst.TIME_ZONE_ID;
  */
 @Getter
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public class BaseAudit {
     protected ZonedDateTime createdAt;
     protected ZonedDateTime updatedAt;
     protected ZonedDateTime deletedAt;
 
+    @CreatedBy
+    @Column(name = "created_by", nullable = false, updatable = false)
+    private String createdBy;
+
+    @LastModifiedBy
+    @Column(name = "updated_by")
+    private String updated_by;
 
     @PrePersist
     protected void prePersist() {

@@ -13,15 +13,21 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -33,37 +39,36 @@ import java.util.UUID;
 public class Category extends BaseAudit {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(columnDefinition = "UUID", nullable = false, unique = true)
+    @GeneratedValue(generator = "uuid2")
+    @UuidGenerator
+    @JdbcTypeCode(SqlTypes.CHAR)
+    @Column(nullable = false, length = 36, unique = true)
     private UUID id;
 
+    @Column(nullable = false, unique = true)
+    private String name;
+
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private CategoryType name;
-
-    @CreatedBy
-    @Column(name = "created_by", nullable = false)
-    private String createdBy;
-
-    @LastModifiedBy
-    @Column(name = "updated_by")
-    private String updated_by;
+    private boolean isDeleted = false;
 
     @Column(name = "deleted_by")
     private String deletedBy;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "store_id", nullable = false)
-    private Store store;
+    @OneToMany(mappedBy = "category")
+    private List<Store> storeList = new ArrayList<>();
 
     @Builder
-    public Category(CategoryType name, Store store) {
+    public Category(String name) {
         this.name = name;
-        this.store = store;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setDeleted(String username) {
         this.deletedBy = username;
         this.deletedAt = ZonedDateTime.now();
+        this.isDeleted = true;
     }
 }

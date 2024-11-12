@@ -3,6 +3,7 @@ package com.spartaordersystem.domains.store.service;
 import com.spartaordersystem.domains.category.entity.Category;
 import com.spartaordersystem.domains.category.repository.CategoryRepository;
 import com.spartaordersystem.domains.store.controller.dto.CreateStoreDto;
+import com.spartaordersystem.domains.store.controller.dto.GetStoreDto;
 import com.spartaordersystem.domains.store.controller.dto.UpdateStoreDto;
 import com.spartaordersystem.domains.store.entity.Store;
 import com.spartaordersystem.domains.store.repository.StoreRepository;
@@ -23,8 +24,8 @@ public class StoreService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
 
-    public CreateStoreDto.ResponseDto createStore(Long userId, String userRole, CreateStoreDto.RequestDto requestDto) {
-        User user = checkUser(userId);
+    public CreateStoreDto.ResponseDto createStore(User user, String userRole, CreateStoreDto.RequestDto requestDto) {
+        checkUser(user);
         checkUserRole(userRole);
         Category category = getCategory(requestDto);
 
@@ -51,12 +52,15 @@ public class StoreService {
                 .build();
     }
 
-    public UpdateStoreDto.ResponseDto updateStore(UUID storeId, Long userId, String userRole, UpdateStoreDto.RequestDto requestDto) {
-        User user = checkUser(userId);
+    public UpdateStoreDto.ResponseDto updateStore(UUID storeId, User user, String userRole, UpdateStoreDto.RequestDto requestDto) {
+        checkUser(user);
         checkUserRole(userRole);
+        Store store = getStore(storeId);
+        checkUserIsStoreOwner(user, store);
+
         Category category = getCategory(requestDto);
 
-        Store store = Store.builder()
+        store = Store.builder()
                 .title(requestDto.getTitle())
                 .address(requestDto.getAddress())
                 .openTime(requestDto.getOpenTime())
@@ -78,13 +82,31 @@ public class StoreService {
                 .build();
     }
 
+    public void deleteStore(UUID storeId, User user) {
+        checkUser(user);
+        checkUserRole(user.getRole().getAuthority());
+        Store store = getStore(storeId);
+        checkUserIsStoreOwner(user, store);
+
+        store.setDeleted(user.getUsername());
+        storeRepository.save(store);
+    }
+
+
+
+    private static void checkUserIsStoreOwner(User user, Store store) {
+        if (!store.getUser().getId().equals(user.getId())) {
+            throw new CustomException(ErrorCode.FORBIDDEN);
+        }
+    }
+
     private Category getCategory(UpdateStoreDto.RequestDto requestDto) {
         return categoryRepository.findById(requestDto.getCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
-    private User checkUser(Long userId) {
-        return userRepository.findById(userId)
+    private void checkUser(User user) {
+        userRepository.findById(user.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 

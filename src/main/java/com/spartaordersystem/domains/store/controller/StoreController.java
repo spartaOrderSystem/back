@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,10 +31,9 @@ public class StoreController {
             @AuthenticationPrincipal User user,
             @RequestBody CreateStoreDto.RequestDto requestDto
     ) {
-        Long userId = user.getId();
         String userRole = user.getRole().getAuthority();
 
-        CreateStoreDto.ResponseDto responseDto = storeService.createStore(userId, userRole, requestDto);
+        CreateStoreDto.ResponseDto responseDto = storeService.createStore(user, userRole, requestDto);
         BaseResponse response = BaseResponse.toSuccessResponse("가게 생성이 완료되었습니다", responseDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -44,11 +44,20 @@ public class StoreController {
             @PathVariable UUID storeId,
             @RequestBody UpdateStoreDto.RequestDto requestDto
             ) {
-        Long userId = user.getId();
         String userRole = user.getRole().getAuthority();
 
-        UpdateStoreDto.ResponseDto responseDto = storeService.updateStore(storeId, userId, userRole, requestDto);
+        UpdateStoreDto.ResponseDto responseDto = storeService.updateStore(storeId, user, userRole, requestDto);
         BaseResponse response = BaseResponse.toSuccessResponse("가게 정보 수정이 완료되었습니다", responseDto);
         return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{storeId}")
+    public ResponseEntity<BaseResponse> deleteStore(
+            @PathVariable UUID storeId,
+            @AuthenticationPrincipal User user
+    ) {
+
+        storeService.deleteStore(storeId, user);
+        return ResponseEntity.ok(BaseResponse.toSuccessResponse("가게가 삭제되었습니다."));
     }
 }
