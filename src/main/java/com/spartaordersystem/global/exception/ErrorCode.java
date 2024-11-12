@@ -10,6 +10,7 @@ public enum ErrorCode {
 
     /*  400 BAD_REQUEST : 잘못된 요청  */
     ILLEGAL_ARGUMENT_ERROR(400, "잘못된 파라미터 전달"),
+    CATEGORY_IS_DELETED(400, "이미 삭제된 카테고리입니다."),
 
     /*  401 UNAUTHORIZED : 인증 안됨  */
     UNAUTHORIZED(401, "인증되지 않았습니다."),
@@ -28,6 +29,7 @@ public enum ErrorCode {
 
     /*  409 CONFLICT : Resource 중복  */
     ALREADY_EXIST_USERID(409, "이미 존재하는 USERID 입니다."),
+    ALREADY_EXIST_CATEGORY(409, "이미 존재하는 카테고리 입니다."),
 
     /*  500 INTERNAL_SERVER_ERROR : 서버 에러  */
     INTERNAL_SERVER_ERROR(500, "내부 서버 에러입니다."),
