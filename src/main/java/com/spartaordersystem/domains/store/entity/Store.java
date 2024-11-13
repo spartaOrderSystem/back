@@ -120,4 +120,8 @@ public class Store extends BaseAudit {
     public void setCategory(Category category) {
         this.category = category;
     }
+
+    public void setStoreStatus(StoreStatus storeStatus) {
+        this.storeStatus = storeStatus;
+    }
 }

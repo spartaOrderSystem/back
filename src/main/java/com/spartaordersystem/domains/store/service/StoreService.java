@@ -5,6 +5,7 @@ import com.spartaordersystem.domains.store.controller.dto.CreateStoreDto;
 import com.spartaordersystem.domains.store.controller.dto.GetStoreDto;
 import com.spartaordersystem.domains.store.controller.dto.UpdateStoreDto;
 import com.spartaordersystem.domains.store.entity.Store;
+import com.spartaordersystem.domains.store.enums.StoreStatus;
 import com.spartaordersystem.domains.store.repository.StoreRepository;
 import com.spartaordersystem.domains.user.entity.User;
 import com.spartaordersystem.domains.user.repository.UserRepository;
@@ -12,6 +13,7 @@ import com.spartaordersystem.global.exception.CustomException;
 import com.spartaordersystem.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -66,6 +68,21 @@ public class StoreService {
                 .build();
     }
 
+    @Transactional
+    public void updateStoreStatus(User user, UUID storeId) {
+        checkUser(user);
+        Store store = getStore(storeId);
+        checkUserRole(user.getRole().getAuthority(), user, store);
+
+        if (store.getStoreStatus() == StoreStatus.OPEN) {
+            store.setStoreStatus(StoreStatus.CLOSE);
+        } else {
+            store.setStoreStatus(StoreStatus.OPEN);
+        }
+
+        storeRepository.save(store);
+    }
+
     public void deleteStore(UUID storeId, User user) {
         checkUser(user);
         Store store = getStore(storeId);
@@ -100,6 +117,7 @@ public class StoreService {
         }
     }
 
+    // 손님이 아니며, 가게주인인지 검증이 필요한 경우
     private void checkUserRole(String userRole, User user, Store store) {
         if (userRole.equals("ROLE_OWNER")) {
             checkUserIsStoreOwner(user, store);
@@ -109,6 +127,7 @@ public class StoreService {
         }
     }
 
+    // 손님만 아니면 될 경우
     private void checkUserRole(String userRole) {
         if (!(userRole.equals("ROLE_OWNER") || userRole.equals("ROLE_MANAGER") || userRole.equals("ROLE_ADMIN"))) {
             throw new CustomException(ErrorCode.FORBIDDEN);

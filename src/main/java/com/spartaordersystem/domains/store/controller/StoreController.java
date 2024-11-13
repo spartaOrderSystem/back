@@ -62,6 +62,16 @@ public class StoreController {
         return ResponseEntity.ok(response);
     }
 
+    @PatchMapping("/{storeId}/status")
+    public ResponseEntity<BaseResponse> updateStoreStatus(
+            @AuthenticationPrincipal User user,
+            @PathVariable UUID storeId
+    ) {
+        storeService.updateStoreStatus(user, storeId);
+        BaseResponse response = BaseResponse.toSuccessResponse("가게 상태정보가 수정되었습니다.");
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/{storeId}")
     public ResponseEntity<BaseResponse> deleteStore(
             @PathVariable UUID storeId,
