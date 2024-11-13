@@ -6,6 +6,7 @@ import com.spartaordersystem.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,12 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthController {
     private final AuthService authService;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<Object> signUp(@RequestBody AuthRequestDto.SignUp requestDto) {
+    public ResponseEntity<BaseResponse> signUp(@RequestBody AuthRequestDto.SignUp requestDto) {
         log.info("AuthController > signUp");
-        authService.signUp(requestDto.toUser());
-        log.info("{}", ResponseEntity.ok().body(BaseResponse.toSuccessResponse("회원 가입 성공")));
+        authService.signUp(requestDto.toUser(passwordEncoder.encode(requestDto.getPassword())));
+//        log.info("{}", ResponseEntity.ok().body(BaseResponse.toSuccessResponse("회원 가입 성공")));
         return ResponseEntity.ok().body(BaseResponse.toSuccessResponse("회원 가입 성공"));
     }
 
