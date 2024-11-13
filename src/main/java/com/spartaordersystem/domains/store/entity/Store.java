@@ -1,6 +1,7 @@
 package com.spartaordersystem.domains.store.entity;
 
 import com.spartaordersystem.domains.category.entity.Category;
+import com.spartaordersystem.domains.store.controller.dto.UpdateStoreDto;
 import com.spartaordersystem.domains.store.enums.StoreStatus;
 import com.spartaordersystem.domains.user.entity.User;
 import com.spartaordersystem.global.common.BaseAudit;
@@ -22,11 +23,11 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -92,6 +93,15 @@ public class Store extends BaseAudit {
         this.category = category;
     }
 
+    @Transactional
+    public void updateStore(UpdateStoreDto.RequestDto requestDto) {
+        this.title = Optional.ofNullable(requestDto.getTitle()).orElse(this.title);
+        this.address = Optional.ofNullable(requestDto.getAddress()).orElse(this.address);
+        this.phoneNumber = Optional.ofNullable(requestDto.getPhoneNumber()).orElse(this.phoneNumber);
+        this.openTime = Optional.ofNullable(requestDto.getOpenTime()).orElse(this.openTime);
+        this.closeTime = Optional.ofNullable(requestDto.getCloseTime()).orElse(this.closeTime);
+    }
+
     /**
      * 테스트용 메서드
      */
@@ -109,5 +119,9 @@ public class Store extends BaseAudit {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public void setStoreStatus(StoreStatus storeStatus) {
+        this.storeStatus = storeStatus;
     }
 }

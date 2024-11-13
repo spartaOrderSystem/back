@@ -1,18 +1,11 @@
 package com.spartaordersystem.domains.category.entity;
 
-import com.spartaordersystem.domains.category.enums.CategoryType;
 import com.spartaordersystem.domains.store.entity.Store;
 import com.spartaordersystem.global.common.BaseAudit;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -22,8 +15,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.LastModifiedBy;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -70,5 +61,12 @@ public class Category extends BaseAudit {
         this.deletedBy = username;
         this.deletedAt = ZonedDateTime.now();
         this.isDeleted = true;
+    }
+
+    /**
+     *  테스트용 임시 코드
+     */
+    public void setCreatedBy(String username) {
+        this.createdBy = username;
     }
 }

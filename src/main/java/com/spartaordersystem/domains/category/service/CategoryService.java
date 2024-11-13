@@ -6,7 +6,6 @@ import com.spartaordersystem.domains.category.repository.CategoryRepository;
 import com.spartaordersystem.domains.user.entity.User;
 import com.spartaordersystem.global.exception.CustomException;
 import com.spartaordersystem.global.exception.ErrorCode;
-import com.spartaordersystem.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,7 +62,7 @@ public class CategoryService {
     }
 
     public List<CategoryDto.GetCategoryResponseDto> getCategoryList() {
-        List<Category> categoryList = categoryRepository.findAllByDeletedFalse();
+        List<Category> categoryList = categoryRepository.findAllByIsDeletedFalse();
 
         return categoryList.stream()
                 .map(category -> new CategoryDto.GetCategoryResponseDto(category.getId(), category.getName()))
