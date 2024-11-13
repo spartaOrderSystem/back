@@ -43,10 +43,10 @@ public class AuthRequestDto {
             this.role = role;
         }
 
-        public User toUser() {
+        public User toUser(String encodedPassword) {
             return User.builder()
                     .username(this.username)
-                    .password(this.password)
+                    .password(encodedPassword)
                     .role(UserRoleEnum.valueOf(this.role))
                     .nickname(this.nickname)
                     .build();
@@ -72,7 +72,5 @@ public class AuthRequestDto {
             this.password = password;
         }
     }
-
-
 
 }
