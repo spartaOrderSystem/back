@@ -1,6 +1,5 @@
 package com.spartaordersystem.domains.store.service;
 
-import com.spartaordersystem.domains.category.entity.Category;
 import com.spartaordersystem.domains.category.repository.CategoryRepository;
 import com.spartaordersystem.domains.store.controller.dto.CreateStoreDto;
 import com.spartaordersystem.domains.store.controller.dto.GetStoreDto;
@@ -114,11 +113,6 @@ public class StoreService {
         if (!(userRole.equals("ROLE_OWNER") || userRole.equals("ROLE_MANEGER") || userRole.equals("ROLE_ADMIN"))) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
-    }
-
-    private Category getCategory(CreateStoreDto.RequestDto requestDto) {
-        return categoryRepository.findByName(requestDto.getCategoryName())
-                .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
     private Store getStore(UUID storeId) {
