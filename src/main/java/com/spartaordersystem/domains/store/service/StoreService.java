@@ -84,6 +84,7 @@ public class StoreService {
         storeRepository.save(store);
     }
 
+    @Transactional
     public void deleteStore(UUID storeId, User user) {
         checkUser(user);
         Store store = getStore(storeId);

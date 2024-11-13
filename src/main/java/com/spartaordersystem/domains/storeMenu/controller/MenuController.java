@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,4 +48,16 @@ public class MenuController {
         BaseResponse response = BaseResponse.toSuccessResponse("메뉴 정보가 수정되었습니다.", responseDto);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{storeId}/menus/{menuId}")
+    public ResponseEntity<BaseResponse> deleteMenu(
+            @AuthenticationPrincipal User user,
+            @PathVariable UUID storeId,
+            @PathVariable UUID menuId
+    ) {
+        menuService.deleteMenu(user, storeId, menuId);
+        return ResponseEntity.ok(BaseResponse.toSuccessResponse("메뉴가 삭제되었습니다"));
+    }
+
+
 }
