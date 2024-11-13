@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 
 import static com.spartaordersystem.global.common.GlobalConst.TIME_ZONE_ID;
 
-// TODO : 추가 반영 필요 사항 - deletedAt과 생성, 수정, 삭제 사용자 업데이트
+// TODO : 추가 반영 필요 사항 - deletedAt, deletedBy 삭제 시 soft delete 로직과 함께 구현
 /**
  * 생성시간, 수정시간 자동 저장 클래스
  */
