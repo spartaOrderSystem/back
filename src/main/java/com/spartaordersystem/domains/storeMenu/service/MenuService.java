@@ -1,6 +1,7 @@
 package com.spartaordersystem.domains.storeMenu.service;
 
 import com.spartaordersystem.domains.storeMenu.controller.dto.CreateMenuDto;
+import com.spartaordersystem.domains.storeMenu.controller.dto.UpdateMenuDto;
 import com.spartaordersystem.domains.storeMenu.entity.StoreMenu;
 import com.spartaordersystem.domains.storeMenu.repository.MenuRepository;
 import com.spartaordersystem.domains.store.entity.Store;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.*;
 import java.util.UUID;
 
 @Service
@@ -36,6 +38,25 @@ public class MenuService {
         menuRepository.save(menu);
 
         return CreateMenuDto.ResponseDto.builder()
+                .id(menu.getId())
+                .title(menu.getTitle())
+                .description(menu.getDescription())
+                .price(menu.getPrice())
+                .build();
+    }
+
+    @Transactional
+    public UpdateMenuDto.ResponseDto updateMenu(User user, UUID storeId, UUID menuId, UpdateMenuDto.RequestDto requestDto) {
+        Store store = getStore(storeId);
+        checkUserRole(user.getRole().getAuthority(), user, store);
+        StoreMenu menu = getMenu(menuId);
+
+        menu.updateMenu(requestDto);
+
+        menuRepository.save(menu);
+
+        return UpdateMenuDto.ResponseDto.builder()
+                .id(menu.getId())
                 .title(menu.getTitle())
                 .description(menu.getDescription())
                 .price(menu.getPrice())
@@ -61,5 +82,10 @@ public class MenuService {
     private Store getStore(UUID storeId) {
         return storeRepository.findById(storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
+    }
+
+    private StoreMenu getMenu(UUID menuId) {
+        return menuRepository.findById(menuId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
     }
 }

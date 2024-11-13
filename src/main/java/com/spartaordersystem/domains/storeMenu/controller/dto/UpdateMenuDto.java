@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-public class CreateMenuDto {
+public class UpdateMenuDto {
 
     @Getter
     @AllArgsConstructor
@@ -28,5 +28,4 @@ public class CreateMenuDto {
         private String description;
         private long price;
     }
-
 }
