@@ -2,6 +2,7 @@ package com.spartaordersystem.domains.storeMenu.controller;
 
 import com.spartaordersystem.domains.storeMenu.controller.dto.CreateMenuDto;
 import com.spartaordersystem.domains.storeMenu.controller.dto.GetMenuDto;
+import com.spartaordersystem.domains.storeMenu.controller.dto.GetMenuListDto;
 import com.spartaordersystem.domains.storeMenu.controller.dto.UpdateMenuDto;
 import com.spartaordersystem.domains.storeMenu.service.MenuService;
 import com.spartaordersystem.domains.user.entity.User;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -83,5 +85,12 @@ public class MenuController {
         return ResponseEntity.ok(response);
     }
 
-
+    @GetMapping("/stores/{storeId}/menus")
+    public ResponseEntity<BaseResponse> getMenuList(
+            @PathVariable UUID storeId
+    ) {
+        List<GetMenuListDto.ResponseDto> menuList = menuService.getMenuList(storeId);
+        BaseResponse response = BaseResponse.toSuccessResponse("가게 메뉴 목록 조회", menuList);
+        return ResponseEntity.ok(response);
+    }
 }
