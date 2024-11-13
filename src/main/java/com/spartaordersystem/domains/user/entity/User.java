@@ -1,15 +1,9 @@
 package com.spartaordersystem.domains.user.entity;
 
+import com.spartaordersystem.global.common.BaseAudit;
+import com.spartaordersystem.global.security.user.UserRoleConverter;
 import com.spartaordersystem.global.security.user.UserRoleEnum;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -20,7 +14,7 @@ import lombok.*;
 @Table(name = "users", indexes = @Index(name = "idx_nickname", columnList = "nickname"))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class User {
+public class User extends BaseAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,8 +26,6 @@ public class User {
     private String username;
 
     @Column(nullable = false)
-    @Size(min = 8, max = 15)
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,15}$")
     private String password;
 
     @Column(nullable = false)
