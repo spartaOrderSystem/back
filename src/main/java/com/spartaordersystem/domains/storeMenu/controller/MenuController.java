@@ -59,5 +59,16 @@ public class MenuController {
         return ResponseEntity.ok(BaseResponse.toSuccessResponse("메뉴가 삭제되었습니다"));
     }
 
+    @PatchMapping("/{storeId}/menus/{menuId}/hide")
+    public ResponseEntity<BaseResponse> updateMenuStatus(
+            @AuthenticationPrincipal User user,
+            @PathVariable UUID storeId,
+            @PathVariable UUID menuId
+    ) {
+        menuService.updateMenuStatus(user, storeId, menuId);
+        BaseResponse response = BaseResponse.toSuccessResponse("메뉴 상태가 변경되었습니다.");
+        return ResponseEntity.ok(response);
+    }
+
 
 }

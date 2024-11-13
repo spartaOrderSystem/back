@@ -28,7 +28,7 @@ public class StoreService {
 
     public CreateStoreDto.ResponseDto createStore(User user, CreateStoreDto.RequestDto requestDto) {
         checkUser(user);
-        checkUserRole(user.getRole().getAuthority());
+        checkUserRoleAdmin(user.getRole().getAuthority());
 
         Store store = Store.builder()
                 .title(requestDto.getTitle())
@@ -132,6 +132,13 @@ public class StoreService {
     // 손님만 아니면 될 경우
     private void checkUserRole(String userRole) {
         if (!(userRole.equals(GlobalConst.ROLE_OWNER) || userRole.equals(GlobalConst.ROLE_MANAGER) || userRole.equals(GlobalConst.ROLE_ADMIN))) {
+            throw new CustomException(ErrorCode.FORBIDDEN);
+        }
+    }
+
+    // 매니저나 관리자
+    private void checkUserRoleAdmin(String userRole) {
+        if (!(userRole.equals(GlobalConst.ROLE_MANAGER) || userRole.equals(GlobalConst.ROLE_ADMIN))) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
     }

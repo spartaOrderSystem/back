@@ -5,6 +5,7 @@ import com.spartaordersystem.domains.store.repository.StoreRepository;
 import com.spartaordersystem.domains.storeMenu.controller.dto.CreateMenuDto;
 import com.spartaordersystem.domains.storeMenu.controller.dto.UpdateMenuDto;
 import com.spartaordersystem.domains.storeMenu.entity.StoreMenu;
+import com.spartaordersystem.domains.storeMenu.enums.MenuStatus;
 import com.spartaordersystem.domains.storeMenu.repository.MenuRepository;
 import com.spartaordersystem.domains.user.entity.User;
 import com.spartaordersystem.global.common.GlobalConst;
@@ -73,11 +74,27 @@ public class MenuService {
         menuRepository.save(menu);
     }
 
+    @Transactional
+    public void updateMenuStatus(User user, UUID storeId, UUID menuId) {
+        Store store = getStore(storeId);
+        checkUserRole(user.getRole().getAuthority(), user, store);
+        StoreMenu menu = getMenu(menuId);
+
+        if (menu.getMenuStatus() == MenuStatus.ON_SALE) {
+            menu.setMenuStatus(MenuStatus.SOLD_OUT);
+        } else {
+            menu.setMenuStatus(MenuStatus.ON_SALE);
+        }
+
+        menuRepository.save(menu);
+    }
+
     private void checkUserIsStoreOwner(User user, Store store) {
         if (!store.getUser().getId().equals(user.getId())) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
     }
+
     // 손님이 아니며, 가게주인인지 검증이 필요한 경우
 
     private void checkUserRole(String userRole, User user, Store store) {
