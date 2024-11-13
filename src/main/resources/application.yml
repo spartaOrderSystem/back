@@ -10,3 +10,7 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: create-drop
+
+gemini:
+  api:
+    key: ${GEMINI_API_KEY}
