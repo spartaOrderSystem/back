@@ -3,6 +3,7 @@ package com.spartaordersystem.domains.storeMenu.service;
 import com.spartaordersystem.domains.store.entity.Store;
 import com.spartaordersystem.domains.store.repository.StoreRepository;
 import com.spartaordersystem.domains.storeMenu.controller.dto.CreateMenuDto;
+import com.spartaordersystem.domains.storeMenu.controller.dto.GetMenuDto;
 import com.spartaordersystem.domains.storeMenu.controller.dto.UpdateMenuDto;
 import com.spartaordersystem.domains.storeMenu.entity.StoreMenu;
 import com.spartaordersystem.domains.storeMenu.enums.MenuStatus;
@@ -87,6 +88,23 @@ public class MenuService {
         }
 
         menuRepository.save(menu);
+    }
+
+    @Transactional(readOnly = true)
+    public GetMenuDto.ResponseDto getMenuInfo(UUID storeId, UUID menuId) {
+        Store store = getStore(storeId);
+        StoreMenu menu = getMenu(menuId);
+
+        if (menu.getMenuStatus() == MenuStatus.SOLD_OUT || menu.isDeleted()) {
+            throw new CustomException(ErrorCode.MENU_NOT_FOUND);
+        }
+
+        return GetMenuDto.ResponseDto.builder()
+                .id(menu.getId())
+                .title(menu.getTitle())
+                .description(menu.getDescription())
+                .price(menu.getPrice())
+                .build();
     }
 
     private void checkUserIsStoreOwner(User user, Store store) {
