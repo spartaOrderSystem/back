@@ -29,7 +29,7 @@ public class User extends BaseAudit {
     private String password;
 
     @Column(nullable = false)
-    @Enumerated(value = EnumType.STRING)
+    @Convert(converter = UserRoleConverter.class)
     private UserRoleEnum role;
 
     @Column(nullable = false)
