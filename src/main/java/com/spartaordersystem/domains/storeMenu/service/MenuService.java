@@ -63,13 +63,23 @@ public class MenuService {
                 .build();
     }
 
+    @Transactional
+    public void deleteMenu(User user, UUID storeId, UUID menuId) {
+        Store store = getStore(storeId);
+        checkUserRole(user.getRole().getAuthority(), user, store);
+        StoreMenu menu = getMenu(menuId);
+
+        menu.setDeleted(user.getUsername());
+        menuRepository.save(menu);
+    }
+
     private void checkUserIsStoreOwner(User user, Store store) {
         if (!store.getUser().getId().equals(user.getId())) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
     }
-
     // 손님이 아니며, 가게주인인지 검증이 필요한 경우
+
     private void checkUserRole(String userRole, User user, Store store) {
         if (userRole.equals(GlobalConst.ROLE_OWNER)) {
             checkUserIsStoreOwner(user, store);
