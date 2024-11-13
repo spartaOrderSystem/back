@@ -4,6 +4,7 @@ import com.spartaordersystem.domains.store.entity.Store;
 import com.spartaordersystem.domains.store.repository.StoreRepository;
 import com.spartaordersystem.domains.storeMenu.controller.dto.CreateMenuDto;
 import com.spartaordersystem.domains.storeMenu.controller.dto.GetMenuDto;
+import com.spartaordersystem.domains.storeMenu.controller.dto.GetMenuListDto;
 import com.spartaordersystem.domains.storeMenu.controller.dto.UpdateMenuDto;
 import com.spartaordersystem.domains.storeMenu.entity.StoreMenu;
 import com.spartaordersystem.domains.storeMenu.enums.MenuStatus;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -105,6 +107,21 @@ public class MenuService {
                 .description(menu.getDescription())
                 .price(menu.getPrice())
                 .build();
+    }
+
+    public List<GetMenuListDto.ResponseDto> getMenuList(UUID storeId) {
+        Store store = getStore(storeId);
+
+        List<StoreMenu> menuList = menuRepository.findByStoreAndMenuStatusAndIsDeletedFalse(store, MenuStatus.ON_SALE);
+
+        return menuList.stream()
+                .map(menu -> GetMenuListDto.ResponseDto.builder()
+                        .id(menu.getId())
+                        .title(menu.getTitle())
+                        .description(menu.getDescription())
+                        .price(menu.getPrice())
+                        .build())
+                .toList();
     }
 
     private void checkUserIsStoreOwner(User user, Store store) {
