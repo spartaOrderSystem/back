@@ -71,4 +71,11 @@ public class Category extends BaseAudit {
         this.deletedAt = ZonedDateTime.now();
         this.isDeleted = true;
     }
+
+    /**
+     *  테스트용 임시 코드
+     */
+    public void setCreatedBy(String username) {
+        this.createdBy = username;
+    }
 }

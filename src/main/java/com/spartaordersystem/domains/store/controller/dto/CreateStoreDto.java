@@ -21,7 +21,7 @@ public class CreateStoreDto {
         private ZonedDateTime openTime;
         private ZonedDateTime closeTime;
         private String phoneNumber;
-        private UUID categoryId;
+        private String categoryName;
     }
 
     @Getter
@@ -35,6 +35,10 @@ public class CreateStoreDto {
         private ZonedDateTime closeTime;
         private String phoneNumber;
         private String categoryName;
+
+        public void setCategoryName(String categoryName) {
+            this.categoryName = categoryName;
+        }
     }
 
 

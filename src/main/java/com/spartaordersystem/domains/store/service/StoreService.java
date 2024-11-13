@@ -24,12 +24,9 @@ public class StoreService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
 
-    public CreateStoreDto.ResponseDto createStore(User user, String userRole, CreateStoreDto.RequestDto requestDto) {
+    public CreateStoreDto.ResponseDto createStore(User user, CreateStoreDto.RequestDto requestDto) {
         checkUser(user);
-        checkUserRole(userRole);
-        Category category = getCategory(requestDto);
-
-        String categoryName = category.getName().name();
+        checkUserRole(user.getRole().getAuthority());
 
         Store store = Store.builder()
                 .title(requestDto.getTitle())
@@ -48,26 +45,15 @@ public class StoreService {
                 .openTime(store.getOpenTime())
                 .closeTime(store.getCloseTime())
                 .phoneNumber(store.getPhoneNumber())
-                .categoryName(categoryName)
                 .build();
     }
 
-    public UpdateStoreDto.ResponseDto updateStore(UUID storeId, User user, String userRole, UpdateStoreDto.RequestDto requestDto) {
+    public UpdateStoreDto.ResponseDto updateStore(UUID storeId, User user,UpdateStoreDto.RequestDto requestDto) {
         checkUser(user);
-        checkUserRole(userRole);
         Store store = getStore(storeId);
-        checkUserIsStoreOwner(user, store);
+        checkUserRole(user.getRole().getAuthority(), user, store);
 
-        Category category = getCategory(requestDto);
-
-        store = Store.builder()
-                .title(requestDto.getTitle())
-                .address(requestDto.getAddress())
-                .openTime(requestDto.getOpenTime())
-                .closeTime(requestDto.getCloseTime())
-                .phoneNumber(requestDto.getPhoneNumber())
-                .category(category)
-                .build();
+        store.updateStore(requestDto);
 
         storeRepository.save(store);
 
@@ -78,46 +64,60 @@ public class StoreService {
                 .openTime(store.getOpenTime())
                 .closeTime(store.getCloseTime())
                 .phoneNumber(store.getPhoneNumber())
-                .categoryName(category.getName().name())
                 .build();
     }
 
     public void deleteStore(UUID storeId, User user) {
         checkUser(user);
-        checkUserRole(user.getRole().getAuthority());
         Store store = getStore(storeId);
-        checkUserIsStoreOwner(user, store);
+        checkUserRole(user.getRole().getAuthority(), user, store);
 
         store.setDeleted(user.getUsername());
         storeRepository.save(store);
     }
 
+    public GetStoreDto.ResponseDto getStoreInfo(UUID storeId) {
+        Store store = getStore(storeId);
 
-
-    private static void checkUserIsStoreOwner(User user, Store store) {
-        if (!store.getUser().getId().equals(user.getId())) {
-            throw new CustomException(ErrorCode.FORBIDDEN);
-        }
+        return GetStoreDto.ResponseDto.builder()
+                .title(store.getTitle())
+                .address(store.getAddress())
+                .openTime(store.getOpenTime())
+                .closeTime(store.getCloseTime())
+                .phoneNumber(store.getPhoneNumber())
+                .categoryName(store.getCategory().getName())
+                .build();
     }
 
-    private Category getCategory(UpdateStoreDto.RequestDto requestDto) {
-        return categoryRepository.findById(requestDto.getCategoryId())
-                .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
-    }
 
     private void checkUser(User user) {
         userRepository.findById(user.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
-    private static void checkUserRole(String userRole) {
+    private void checkUserIsStoreOwner(User user, Store store) {
+        if (!store.getUser().getId().equals(user.getId())) {
+            throw new CustomException(ErrorCode.FORBIDDEN);
+        }
+    }
+
+    private void checkUserRole(String userRole, User user, Store store) {
+        if (userRole.equals("ROLE_OWNER")) {
+            checkUserIsStoreOwner(user, store);
+        }
+        else if (!(userRole.equals("ROLE_MANAGER") || userRole.equals("ROLE_ADMIN"))) {
+            throw new CustomException(ErrorCode.FORBIDDEN);
+        }
+    }
+
+    private void checkUserRole(String userRole) {
         if (!(userRole.equals("ROLE_OWNER") || userRole.equals("ROLE_MANEGER") || userRole.equals("ROLE_ADMIN"))) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
     }
 
     private Category getCategory(CreateStoreDto.RequestDto requestDto) {
-        return categoryRepository.findById(requestDto.getCategoryId())
+        return categoryRepository.findByName(requestDto.getCategoryName())
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
