@@ -1,15 +1,18 @@
 package com.spartaordersystem.domains.storeMenu.controller;
 
 import com.spartaordersystem.domains.storeMenu.controller.dto.CreateMenuDto;
+import com.spartaordersystem.domains.storeMenu.controller.dto.GetMenuDto;
 import com.spartaordersystem.domains.storeMenu.controller.dto.UpdateMenuDto;
 import com.spartaordersystem.domains.storeMenu.service.MenuService;
 import com.spartaordersystem.domains.user.entity.User;
 import com.spartaordersystem.global.response.BaseResponse;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -67,6 +70,16 @@ public class MenuController {
     ) {
         menuService.updateMenuStatus(user, storeId, menuId);
         BaseResponse response = BaseResponse.toSuccessResponse("메뉴 상태가 변경되었습니다.");
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{storeId}/menus/{menuId}")
+    public ResponseEntity<BaseResponse> getMenuInfo(
+            @PathVariable UUID storeId,
+            @PathVariable UUID menuId
+    ) {
+        GetMenuDto.ResponseDto responseDto = menuService.getMenuInfo(storeId, menuId);
+        BaseResponse response = BaseResponse.toSuccessResponse("메뉴 정보 조회 성공", responseDto);
         return ResponseEntity.ok(response);
     }
 
