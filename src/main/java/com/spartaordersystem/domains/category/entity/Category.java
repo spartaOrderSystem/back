@@ -66,7 +66,7 @@ public class Category extends BaseAudit {
     /**
      *  테스트용 임시 코드
      */
-    public void setCreatedBy(String username) {
-        this.createdBy = username;
-    }
+//    public void setCreatedBy(String username) {
+//        this.createdBy = username;
+//    }
 }
