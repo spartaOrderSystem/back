@@ -1,19 +1,19 @@
 package com.spartaordersystem.domains.storeMenu.service;
 
+import com.spartaordersystem.domains.store.entity.Store;
+import com.spartaordersystem.domains.store.repository.StoreRepository;
 import com.spartaordersystem.domains.storeMenu.controller.dto.CreateMenuDto;
 import com.spartaordersystem.domains.storeMenu.controller.dto.UpdateMenuDto;
 import com.spartaordersystem.domains.storeMenu.entity.StoreMenu;
 import com.spartaordersystem.domains.storeMenu.repository.MenuRepository;
-import com.spartaordersystem.domains.store.entity.Store;
-import com.spartaordersystem.domains.store.repository.StoreRepository;
 import com.spartaordersystem.domains.user.entity.User;
+import com.spartaordersystem.global.common.GlobalConst;
 import com.spartaordersystem.global.exception.CustomException;
 import com.spartaordersystem.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.*;
 import java.util.UUID;
 
 @Service
@@ -71,10 +71,10 @@ public class MenuService {
 
     // 손님이 아니며, 가게주인인지 검증이 필요한 경우
     private void checkUserRole(String userRole, User user, Store store) {
-        if (userRole.equals("ROLE_OWNER")) {
+        if (userRole.equals(GlobalConst.ROLE_OWNER)) {
             checkUserIsStoreOwner(user, store);
         }
-        else if (!(userRole.equals("ROLE_MANAGER") || userRole.equals("ROLE_ADMIN"))) {
+        else if (!(userRole.equals(GlobalConst.ROLE_MANAGER) || userRole.equals(GlobalConst.ROLE_ADMIN))) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
     }

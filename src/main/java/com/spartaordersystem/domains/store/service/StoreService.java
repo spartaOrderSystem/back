@@ -9,6 +9,7 @@ import com.spartaordersystem.domains.store.enums.StoreStatus;
 import com.spartaordersystem.domains.store.repository.StoreRepository;
 import com.spartaordersystem.domains.user.entity.User;
 import com.spartaordersystem.domains.user.repository.UserRepository;
+import com.spartaordersystem.global.common.GlobalConst;
 import com.spartaordersystem.global.exception.CustomException;
 import com.spartaordersystem.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -119,17 +120,17 @@ public class StoreService {
 
     // 손님이 아니며, 가게주인인지 검증이 필요한 경우
     private void checkUserRole(String userRole, User user, Store store) {
-        if (userRole.equals("ROLE_OWNER")) {
+        if (userRole.equals(GlobalConst.ROLE_OWNER)) {
             checkUserIsStoreOwner(user, store);
         }
-        else if (!(userRole.equals("ROLE_MANAGER") || userRole.equals("ROLE_ADMIN"))) {
+        else if (!(userRole.equals(GlobalConst.ROLE_MANAGER) || userRole.equals(GlobalConst.ROLE_ADMIN))) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
     }
 
     // 손님만 아니면 될 경우
     private void checkUserRole(String userRole) {
-        if (!(userRole.equals("ROLE_OWNER") || userRole.equals("ROLE_MANAGER") || userRole.equals("ROLE_ADMIN"))) {
+        if (!(userRole.equals(GlobalConst.ROLE_OWNER) || userRole.equals(GlobalConst.ROLE_MANAGER) || userRole.equals(GlobalConst.ROLE_ADMIN))) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
     }
