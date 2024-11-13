@@ -110,7 +110,7 @@ public class StoreService {
     }
 
     private void checkUserRole(String userRole) {
-        if (!(userRole.equals("ROLE_OWNER") || userRole.equals("ROLE_MANEGER") || userRole.equals("ROLE_ADMIN"))) {
+        if (!(userRole.equals("ROLE_OWNER") || userRole.equals("ROLE_MANAGER") || userRole.equals("ROLE_ADMIN"))) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
     }
