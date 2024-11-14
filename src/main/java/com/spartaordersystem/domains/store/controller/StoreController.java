@@ -37,6 +37,9 @@ public class StoreController {
             @RequestBody CreateStoreDto.RequestDto requestDto
     ) {
         CreateStoreDto.ResponseDto responseDto = storeService.createStore(user, requestDto);
+        /**
+         * 컨트롤러는 비즈니스 로직 흐름이 있어선 안된다
+         */
 
         storeCategoryService.createStoreCategory(responseDto.getId(), user, requestDto.getCategoryName());
         responseDto.setCategoryName(requestDto.getCategoryName());

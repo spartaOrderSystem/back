@@ -30,6 +30,10 @@ public class StoreCategoryService {
         Category category = checkCategoryExists(categoryName);
 
         store.setCategory(category);
+        /**
+         * 이게 있기 때문에 스토어서비스에 속하는게 맞다
+         * 동일하게 위치시키거나 로직을 합치거나
+         */
         storeRepository.save(store);
     }
 

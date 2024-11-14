@@ -1,5 +1,6 @@
 package com.spartaordersystem.domains.storeMenu.entity;
 
+import com.spartaordersystem.domains.ai.entity.Prompt;
 import com.spartaordersystem.domains.storeMenu.controller.dto.UpdateMenuDto;
 import com.spartaordersystem.domains.storeMenu.enums.MenuStatus;
 import com.spartaordersystem.domains.store.entity.Store;
@@ -14,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -67,13 +69,17 @@ public class StoreMenu extends BaseAudit {
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
+    @OneToOne(mappedBy = "storeMenu", fetch = FetchType.LAZY)
+    private Prompt prompt;
+
     @Builder
-    public StoreMenu(String title, String description, long price, MenuStatus menuStatus, Store store) {
+    public StoreMenu(String title, String description, long price, MenuStatus menuStatus, Store store, Prompt prompt) {
         this.title = title;
         this.description = description;
         this.price = price;
         this.menuStatus = menuStatus;
         this.store = store;
+        this.prompt = prompt;
     }
 
     @Transactional
@@ -91,6 +97,10 @@ public class StoreMenu extends BaseAudit {
 
     public void setMenuStatus(MenuStatus menuStatus) {
         this.menuStatus = menuStatus;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }
