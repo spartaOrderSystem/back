@@ -22,9 +22,7 @@ public class StoreCategoryService {
     private final StoreRepository storeRepository;
 
     @Transactional
-    public void createStoreCategory(UUID storeId, User user, String categoryName) {
-
-        checkUserRole(user.getRole().getAuthority());
+    public void createStoreCategory(UUID storeId, String categoryName) {
         Store store = getStore(storeId);
         Category category = checkCategoryExists(categoryName);
 
@@ -34,35 +32,15 @@ public class StoreCategoryService {
 
     @Transactional
     public void updateStoreCategory(
-            UUID storeId, User user, String categoryName) {
+            UUID storeId, String categoryName) {
 
         Store store = getStore(storeId);
-        checkUserRole(user.getRole().getAuthority(), user, store);
         Category category = checkCategoryExists(categoryName);
 
         store.setCategory(category);
         storeRepository.save(store);
     }
 
-    private void checkUserRole(String userRole) {
-        if (!(userRole.equals(GlobalConst.ROLE_OWNER) || userRole.equals(GlobalConst.ROLE_MANAGER) || userRole.equals(GlobalConst.ROLE_ADMIN))) {
-            throw new CustomException(ErrorCode.FORBIDDEN);
-        }
-    }
-    private void checkUserIsStoreOwner(User user, Store store) {
-        if (!store.getUser().getId().equals(user.getId())) {
-            throw new CustomException(ErrorCode.FORBIDDEN);
-        }
-    }
-
-    private void checkUserRole(String userRole, User user, Store store) {
-        if (userRole.equals(GlobalConst.ROLE_OWNER)) {
-            checkUserIsStoreOwner(user, store);
-        }
-        else if (!(userRole.equals(GlobalConst.ROLE_MANAGER) || userRole.equals(GlobalConst.ROLE_ADMIN))) {
-            throw new CustomException(ErrorCode.FORBIDDEN);
-        }
-    }
 
     private Store getStore(UUID storeId) {
         return storeRepository.findById(storeId)

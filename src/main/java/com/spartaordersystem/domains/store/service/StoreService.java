@@ -17,6 +17,7 @@ import com.spartaordersystem.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.UUID;
 
@@ -44,7 +45,7 @@ public class StoreService {
         storeRepository.save(store);
 
         if (requestDto.getCategoryName() != null) {
-            storeCategoryService.createStoreCategory(store.getId(), user, requestDto.getCategoryName());
+            storeCategoryService.createStoreCategory(store.getId(), requestDto.getCategoryName());
         }
 
 
@@ -65,8 +66,11 @@ public class StoreService {
         checkUserRole(user.getRole().getAuthority(), user, store);
 
         store.updateStore(requestDto);
-
         storeRepository.save(store);
+
+        if (StringUtils.hasText(requestDto.getCategoryName())) {
+            storeCategoryService.updateStoreCategory(store.getId(), requestDto.getCategoryName());
+        }
 
         return UpdateStoreDto.ResponseDto.builder()
                 .id(storeId)
@@ -75,6 +79,7 @@ public class StoreService {
                 .openTime(store.getOpenTime())
                 .closeTime(store.getCloseTime())
                 .phoneNumber(store.getPhoneNumber())
+                .categoryName(store.getCategory().getName())
                 .build();
     }
 
