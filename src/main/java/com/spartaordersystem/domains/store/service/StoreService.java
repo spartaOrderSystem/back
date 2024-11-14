@@ -40,12 +40,14 @@ public class StoreService {
                 .phoneNumber(requestDto.getPhoneNumber())
                 .openTime(requestDto.getOpenTime())
                 .closeTime(requestDto.getCloseTime())
+                .storeStatus(StoreStatus.CLOSE)
+                .user(user)
                 .build();
 
         storeRepository.save(store);
 
         if (requestDto.getCategoryName() != null) {
-            storeCategoryService.createStoreCategory(store.getId(), requestDto.getCategoryName());
+            store = storeCategoryService.createStoreCategory(store.getId(), requestDto.getCategoryName());
         }
 
 
@@ -60,6 +62,7 @@ public class StoreService {
                 .build();
     }
 
+    @Transactional
     public UpdateStoreDto.ResponseDto updateStore(UUID storeId, User user,UpdateStoreDto.RequestDto requestDto) {
         checkUser(user);
         Store store = getStore(storeId);
