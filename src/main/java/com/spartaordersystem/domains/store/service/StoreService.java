@@ -1,6 +1,8 @@
 package com.spartaordersystem.domains.store.service;
 
+import com.spartaordersystem.domains.category.entity.Category;
 import com.spartaordersystem.domains.category.repository.CategoryRepository;
+import com.spartaordersystem.domains.category.service.StoreCategoryService;
 import com.spartaordersystem.domains.store.controller.dto.CreateStoreDto;
 import com.spartaordersystem.domains.store.controller.dto.GetStoreDto;
 import com.spartaordersystem.domains.store.controller.dto.UpdateStoreDto;
@@ -25,6 +27,7 @@ public class StoreService {
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final StoreCategoryService storeCategoryService;
 
     public CreateStoreDto.ResponseDto createStore(User user, CreateStoreDto.RequestDto requestDto) {
         checkUser(user);
@@ -40,6 +43,11 @@ public class StoreService {
 
         storeRepository.save(store);
 
+        if (requestDto.getCategoryName() != null) {
+            storeCategoryService.createStoreCategory(store.getId(), user, requestDto.getCategoryName());
+        }
+
+
         return CreateStoreDto.ResponseDto.builder()
                 .id(store.getId())
                 .title(store.getTitle())
@@ -47,6 +55,7 @@ public class StoreService {
                 .openTime(store.getOpenTime())
                 .closeTime(store.getCloseTime())
                 .phoneNumber(store.getPhoneNumber())
+                .categoryName(store.getCategory().getName())
                 .build();
     }
 

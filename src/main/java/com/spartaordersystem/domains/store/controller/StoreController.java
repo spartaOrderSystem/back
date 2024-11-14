@@ -29,7 +29,6 @@ import java.util.UUID;
 public class StoreController {
 
     private final StoreService storeService;
-    private final StoreCategoryService storeCategoryService;
 
     @PostMapping
     public ResponseEntity<BaseResponse> createStore(
@@ -37,13 +36,6 @@ public class StoreController {
             @RequestBody CreateStoreDto.RequestDto requestDto
     ) {
         CreateStoreDto.ResponseDto responseDto = storeService.createStore(user, requestDto);
-        /**
-         * 컨트롤러는 비즈니스 로직 흐름이 있어선 안된다
-         */
-
-        storeCategoryService.createStoreCategory(responseDto.getId(), user, requestDto.getCategoryName());
-        responseDto.setCategoryName(requestDto.getCategoryName());
-
         BaseResponse response = BaseResponse.toSuccessResponse("가게 생성이 완료되었습니다", responseDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
