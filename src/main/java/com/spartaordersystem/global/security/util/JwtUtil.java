@@ -69,6 +69,7 @@ public class JwtUtil {
 
             // Response 객체에 Cookie 추가
             res.addCookie(cookie);
+            res.setHeader("ACCESS_TOKEN", token);
         } catch (UnsupportedEncodingException e) {
             logger.error(e.getMessage());
         }
