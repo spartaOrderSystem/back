@@ -8,7 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-
+/**
+ *  글로벌로 옮기고
+ *  인터페이스로 변경
+ *  ai 패키지에서는
+ *  impl을 만들어서 상속받게
+ *  하는게 좋다
+ *  리팩토링
+ */
 @Component
 public class GeminiApiClient {
 
