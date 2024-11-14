@@ -1,5 +1,6 @@
 package com.spartaordersystem.domains.user.entity;
 
+import com.spartaordersystem.domains.UserAddress.entity.UserAddress;
 import com.spartaordersystem.global.common.BaseAudit;
 import com.spartaordersystem.global.security.user.UserRoleConverter;
 import com.spartaordersystem.global.security.user.UserRoleEnum;
@@ -35,6 +36,10 @@ public class User extends BaseAudit {
     @Column(nullable = false)
     private String nickname;
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_address_id")
+    private UserAddress userAddress;
+
     @Builder
     public User(String username, String password, UserRoleEnum role, String nickname) {
         this.username = username;
@@ -42,4 +47,8 @@ public class User extends BaseAudit {
         this.role = role;
         this.nickname = nickname;
     }
+
+    /**
+     * 저희 삭제 소프트딜리트에요  없으셔서 주석 남깁니다! 잊으시면 안돼요!!
+     */
 }
