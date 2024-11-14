@@ -1,5 +1,6 @@
 package com.spartaordersystem.global.security.filter;
 
+import com.spartaordersystem.global.security.user.UserDetailsImpl;
 import com.spartaordersystem.global.security.user.UserDetailsServiceImpl;
 import com.spartaordersystem.global.security.util.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -12,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -68,8 +68,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     // 인증 객체 생성
     private Authentication createAuthentication(String username) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(username);
+        return new UsernamePasswordAuthenticationToken(userDetails.getUser(), null, userDetails.getAuthorities());
     }
-
 }
