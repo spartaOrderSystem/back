@@ -42,5 +42,14 @@ public class PromptController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
+    @GetMapping
+    public ResponseEntity<BaseResponse> getPromptHistory(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<GetPromptDto.ResponseDto> responseDtoList = promptService.getPromptHistory(page, size);
+        BaseResponse response = BaseResponse.toSuccessResponse("프롬프트 기록 조회", responseDtoList);
+        return ResponseEntity.ok(response);
+    }
 }
