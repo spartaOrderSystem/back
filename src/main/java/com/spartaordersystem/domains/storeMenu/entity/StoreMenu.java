@@ -23,6 +23,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.annotations.Where;
 import org.hibernate.type.SqlTypes;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +50,7 @@ public class StoreMenu extends BaseAudit {
     @Column(nullable = false, length = 30)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
     @Column(nullable = false)
@@ -57,7 +58,7 @@ public class StoreMenu extends BaseAudit {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private MenuStatus menuStatus = MenuStatus.ON_SALE;
+    private MenuStatus menuStatus;
 
     @Column(nullable = false)
     private boolean isDeleted = false;

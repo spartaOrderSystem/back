@@ -37,7 +37,7 @@ public class Prompt extends BaseAudit {
     @Column(nullable = false)
     private String promptContent;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String answer;
 
     @OneToOne(fetch = FetchType.LAZY)

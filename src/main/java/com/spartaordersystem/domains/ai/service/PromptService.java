@@ -7,7 +7,6 @@ import com.spartaordersystem.domains.ai.entity.Prompt;
 import com.spartaordersystem.domains.ai.repository.PromptRepository;
 import com.spartaordersystem.domains.store.entity.Store;
 import com.spartaordersystem.domains.store.repository.StoreRepository;
-import com.spartaordersystem.domains.storeMenu.controller.dto.CreateMenuDto;
 import com.spartaordersystem.domains.storeMenu.entity.StoreMenu;
 import com.spartaordersystem.domains.storeMenu.repository.MenuRepository;
 import com.spartaordersystem.domains.user.entity.User;
@@ -15,18 +14,19 @@ import com.spartaordersystem.global.common.GlobalConst;
 import com.spartaordersystem.global.exception.CustomException;
 import com.spartaordersystem.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PromptService {
@@ -66,23 +66,6 @@ public class PromptService {
                 .menuId(menu.getId())
                 .description(menu.getDescription())
                 .build();
-    }
-
-    // 메뉴 생성 시 메뉴에 대한 설명을 직접 입력 하지 않았을 경우
-    @Transactional
-    public String createDescription(String title, long price, String details) {
-        String promptContent = String.format("제목: %s, 가격: %d. %s. 답변은 최대한 간결하게 50자 이내로 해줘", title, price, details);
-
-        String description = geminiApiClient.createDescription(title, price, details);
-
-        Prompt prompt = Prompt.builder()
-                .promptContent(promptContent)
-                .answer(description)
-                .build();
-
-        promptRepository.save(prompt);
-
-        return description;
     }
 
     private StoreMenu getMenu(UUID menuId) {

@@ -1,5 +1,6 @@
 package com.spartaordersystem.domains.storeMenu.controller.dto;
 
+import com.spartaordersystem.domains.storeMenu.enums.MenuStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
