@@ -27,26 +27,18 @@ public class MenuService {
 
     private final MenuRepository menuRepository;
     private final StoreRepository storeRepository;
-    private final PromptService promptService;
 
     @Transactional
     public CreateMenuDto.ResponseDto createMenu(User user, UUID storeId, CreateMenuDto.RequestDto requestDto) {
         Store store = getStore(storeId);
         checkUserRole(user.getRole().getAuthority(), user, store);
 
-        /**
-         * 여기서 requestDto의  description이 null일 경우에   가게주인이 메뉴 설명을 생성하지 않았을 경우
-         * 여기다 ai 서비스를 di해서 가져와서  생성
-         */
-        String description = requestDto.getDescription();
-        if (description == null) {
-            description = promptService.createDescription(requestDto.getTitle(), requestDto.getPrice(), "메뉴 생성");
-        }
 
         StoreMenu menu = StoreMenu.builder()
                 .title(requestDto.getTitle())
-                .description(description)
+                .description(requestDto.getDescription())
                 .price(requestDto.getPrice())
+                .menuStatus(MenuStatus.ON_SALE)
                 .store(store)
                 .build();
 
@@ -103,7 +95,6 @@ public class MenuService {
         menuRepository.save(menu);
     }
 
-    @Transactional(readOnly = true)
     public GetMenuDto.ResponseDto getMenuInfo(UUID storeId, UUID menuId) {
         Store store = getStore(storeId);
         StoreMenu menu = getMenu(menuId);
