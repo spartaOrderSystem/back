@@ -62,7 +62,7 @@ public class Store extends BaseAudit {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private StoreStatus storeStatus = StoreStatus.CLOSE;
+    private StoreStatus storeStatus;
 
     @Column(nullable = false)
     private boolean isDeleted = false;
@@ -71,8 +71,8 @@ public class Store extends BaseAudit {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "category_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
     private Category category;
 
     @Column(name = "deleted_by")

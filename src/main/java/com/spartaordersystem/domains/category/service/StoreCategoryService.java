@@ -22,12 +22,12 @@ public class StoreCategoryService {
     private final StoreRepository storeRepository;
 
     @Transactional
-    public void createStoreCategory(UUID storeId, String categoryName) {
+    public Store createStoreCategory(UUID storeId, String categoryName) {
         Store store = getStore(storeId);
         Category category = checkCategoryExists(categoryName);
 
         store.setCategory(category);
-        storeRepository.save(store);
+        return storeRepository.save(store);
     }
 
     @Transactional

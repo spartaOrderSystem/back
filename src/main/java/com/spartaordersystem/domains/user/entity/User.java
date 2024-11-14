@@ -11,7 +11,7 @@ import lombok.*;
 @ToString
 @Getter
 @Entity
-@Table(name = "users", indexes = @Index(name = "idx_nickname", columnList = "nickname"))
+@Table(name = "p_users", indexes = @Index(name = "idx_nickname", columnList = "nickname"))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class User extends BaseAudit {
