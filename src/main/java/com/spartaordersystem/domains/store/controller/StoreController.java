@@ -47,12 +47,6 @@ public class StoreController {
             @RequestBody UpdateStoreDto.RequestDto requestDto
             ) {
         UpdateStoreDto.ResponseDto responseDto = storeService.updateStore(storeId, user, requestDto);
-
-        if (StringUtils.hasText(requestDto.getCategoryName())) {
-            storeCategoryService.updateStoreCategory(responseDto.getId(), user, responseDto.getCategoryName());
-            responseDto.setCategoryName(requestDto.getCategoryName());
-        }
-
         BaseResponse response = BaseResponse.toSuccessResponse("가게 정보 수정이 완료되었습니다", responseDto);
         return ResponseEntity.ok(response);
     }
