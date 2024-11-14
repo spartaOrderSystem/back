@@ -16,10 +16,15 @@ import com.spartaordersystem.global.exception.CustomException;
 import com.spartaordersystem.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -106,5 +111,26 @@ public class PromptService {
     }
 
 
+    public Page<GetPromptDto.ResponseDto> getPromptHistory(int page, int size) {
+        if (page < 0 || size <= 0) {
+            throw new CustomException(ErrorCode.INVALID_PAGE_OR_SIZE);
+        }
 
+        int pageSize = (size == 10 || size == 30 || size == 50) ? size : 10;
+        Sort sort = Sort.by("createdAt").descending();
+
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+        Page<Prompt> promptPage = promptRepository.findAll(pageable);
+
+        List<GetPromptDto.ResponseDto> responseDtoList = promptPage.getContent().stream()
+                .map(prompt -> GetPromptDto.ResponseDto.builder()
+                        .id(prompt.getId())
+                        .promptContent(prompt.getPromptContent())
+                        .answer(prompt.getAnswer())
+                        .createdAt(prompt.getCreatedAt())
+                        .build())
+                .toList();
+
+        return new PageImpl<>(responseDtoList, pageable, promptPage.getTotalElements());
+    }
 }
