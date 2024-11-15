@@ -7,15 +7,19 @@ import com.spartaordersystem.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly=true)
 @Service
 public class AuthService {
     private final UserRepository userRepository;
 
+    @Transactional
     public void signUp(User user) {
         log.info("AuthService > signUp");
+        usernameDuplicateCheck(user.getUsername());
         userRepository.save(user);
     }
 
