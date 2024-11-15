@@ -60,19 +60,6 @@ public class GeminiApiClient {
     }
 
 
-    public static class requestDto {
-
-        private UUID menuid;
-        private String promptContent;
-
-    }
-
-    public static class data {
-        private UUID menuid;
-        private String description;
-
-    }
-
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor

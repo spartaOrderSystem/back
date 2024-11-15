@@ -4,6 +4,7 @@ import com.spartaordersystem.domains.category.controller.dto.CategoryDto;
 import com.spartaordersystem.domains.category.entity.Category;
 import com.spartaordersystem.domains.category.repository.CategoryRepository;
 import com.spartaordersystem.domains.user.entity.User;
+import com.spartaordersystem.domains.user.repository.UserRepository;
 import com.spartaordersystem.global.common.GlobalConst;
 import com.spartaordersystem.global.exception.CustomException;
 import com.spartaordersystem.global.exception.ErrorCode;
@@ -19,10 +20,12 @@ import java.util.UUID;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public CategoryDto.CreateCategoryResponseDto createCategory(User user, CategoryDto.CreateCategoryRequestDto requestDto) {
         checkUserRole(user.getRole().getAuthority());
+        User authUser = getAuthUser(user);
         checkCategoryAlreadyExists(requestDto);
 
         Category category = Category.builder()
@@ -35,6 +38,11 @@ public class CategoryService {
                 .categoryId(category.getId())
                 .categoryName(category.getName())
                 .build();
+    }
+
+    private User getAuthUser(User user) {
+        return userRepository.findById(user.getId())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
     @Transactional
