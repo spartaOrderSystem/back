@@ -1,14 +1,11 @@
 package com.spartaordersystem.domains.UserAddress.entity;
 
-import com.spartaordersystem.domains.UserAddress.controller.dto.UpdateUserAddressDto;
-import com.spartaordersystem.domains.store.controller.dto.UpdateStoreDto;
 import com.spartaordersystem.domains.user.entity.User;
 import com.spartaordersystem.global.common.BaseAudit;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -19,10 +16,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 @Getter
@@ -75,11 +70,8 @@ public class UserAddress extends BaseAudit {
         this.isDeleted = true;
     }
 
-    @Transactional
-    public void updateUserAddress(UpdateUserAddressDto.RequestDto requestDto) {
-        this.address = Optional.ofNullable(requestDto.getAddress()).orElse(this.address);
-        this.detailAddress = Optional.ofNullable(requestDto.getDetailAddress()).orElse(this.detailAddress);
-        this.storeRequest = Optional.ofNullable(requestDto.getStoreRequest()).orElse(this.storeRequest);
-        this.riderRequest = Optional.ofNullable(requestDto.getRiderRequest()).orElse(this.riderRequest);
-    }
+//    public void setUser(User user) {
+//        this.user = user;
+//    }
+
 }

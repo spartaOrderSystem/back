@@ -25,7 +25,7 @@ import java.util.UUID;
 
 @Entity
 @Getter
-@Table(name = "p_store")
+@Table(name = "p_order_menu")
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -42,7 +42,7 @@ public class OrderMenu {
     private int quantity;
 
     @Column(nullable = false)
-    private int price;
+    private long price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
@@ -53,14 +53,11 @@ public class OrderMenu {
     private StoreMenu menu;
 
     @Builder
-    public OrderMenu(int quantity, int price, Order order, StoreMenu menu) {
+    public OrderMenu(int quantity, long price, Order order, StoreMenu menu) {
         this.quantity = quantity;
         this.price = price;
         this.order = order;
         this.menu = menu;
     }
 
-    public int getTotalPrice() {
-        return this.quantity * this.price;
-    }
 }
