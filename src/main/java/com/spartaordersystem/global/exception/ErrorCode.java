@@ -30,7 +30,7 @@ public enum ErrorCode {
     TIMEOUT_ERROR(408, "응답시간을 초과하였습니다."),
 
     /*  409 CONFLICT : Resource 중복  */
-    ALREADY_EXIST_USERID(409, "이미 존재하는 USERID 입니다."),
+    ALREADY_EXIST_USERNAME(409, "이미 존재하는 회원 아이디 입니다."),
     ALREADY_EXIST_CATEGORY(409, "이미 존재하는 카테고리 입니다."),
     ALREADY_EXIST_ADDRESS(409, "이미 주소가 존재하고 있습니다."),
 

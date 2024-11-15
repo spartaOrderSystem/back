@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequestMapping("/api/v1/auth")
@@ -24,8 +21,14 @@ public class AuthController {
     public ResponseEntity<BaseResponse> signUp(@RequestBody AuthRequestDto.SignUp requestDto) {
         log.info("AuthController > signUp");
         authService.signUp(requestDto.toUser(passwordEncoder.encode(requestDto.getPassword())));
-//        log.info("{}", ResponseEntity.ok().body(BaseResponse.toSuccessResponse("회원 가입 성공")));
         return ResponseEntity.ok().body(BaseResponse.toSuccessResponse("회원 가입 성공"));
+    }
+
+    @GetMapping("/duplicate-check")
+    public ResponseEntity<BaseResponse> usernameDuplicateCheck(@RequestParam String username) {
+        log.info("AuthController > idDuplicateCheck");
+        authService.usernameDuplicateCheck(username);
+        return ResponseEntity.ok().body(BaseResponse.toSuccessResponse("아이디 중복체크 성공"));
     }
 
 }
