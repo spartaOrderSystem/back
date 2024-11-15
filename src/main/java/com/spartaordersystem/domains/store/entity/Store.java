@@ -67,6 +67,9 @@ public class Store extends BaseAudit {
     @Column(nullable = false)
     private boolean isDeleted = false;
 
+    @Column(name = "deleted_by")
+    private String deletedBy;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -75,8 +78,6 @@ public class Store extends BaseAudit {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(name = "deleted_by")
-    private String deletedBy;
 
 
 

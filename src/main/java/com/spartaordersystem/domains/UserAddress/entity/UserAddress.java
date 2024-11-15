@@ -75,11 +75,8 @@ public class UserAddress extends BaseAudit {
         this.isDeleted = true;
     }
 
-//    @Transactional
-//    public void updateUserAddress(UpdateUserAddressDto.RequestDto requestDto) {
-//        this.address = Optional.ofNullable(requestDto.getAddress()).orElse(this.address);
-//        this.detailAddress = Optional.ofNullable(requestDto.getDetailAddress()).orElse(this.detailAddress);
-//        this.storeRequest = Optional.ofNullable(requestDto.getStoreRequest()).orElse(this.storeRequest);
-//        this.riderRequest = Optional.ofNullable(requestDto.getRiderRequest()).orElse(this.riderRequest);
+//    public void setUser(User user) {
+//        this.user = user;
 //    }
+
 }

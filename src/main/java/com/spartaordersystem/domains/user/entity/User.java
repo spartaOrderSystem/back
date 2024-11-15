@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-@ToString
+@ToString (exclude = "userAddress")
 @Getter
 @Entity
 @Table(name = "p_users", indexes = @Index(name = "idx_nickname", columnList = "nickname"))

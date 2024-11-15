@@ -25,6 +25,8 @@ public enum ErrorCode {
     CATEGORY_NOT_FOUND(404, "카테고리를 찾을 수 없습니다."),
     STORE_NOT_FOUND(404, "카테고리를 찾을 수 없습니다."),
     MENU_NOT_FOUND(404, "메뉴를 찾을 수 없습니다."),
+    MENU_IS_SOLD_OUT(404, "품절된 메뉴입니다."),
+    STROE_IS_CLOSED(404, "가게 영업시간이 아닙니다."),
 
     /*  408 REQUEST_TIMEOUT : 요청에 대한 응답 시간 초과  */
     TIMEOUT_ERROR(408, "응답시간을 초과하였습니다."),

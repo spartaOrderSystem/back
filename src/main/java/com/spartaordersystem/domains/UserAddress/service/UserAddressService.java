@@ -36,8 +36,10 @@ public class UserAddressService {
                 .user(user)
                 .build();
 
-        user.setUserAddress(userAddress);
+//        userAddress.setUser(user);
         userAddressRepository.save(userAddress);
+        user.setUserAddress(userAddress);
+        userRepository.save(user);
 
         return CreateUserAddressDto.ResponseDto.builder()
                 .userAddressId(userAddress.getId())
