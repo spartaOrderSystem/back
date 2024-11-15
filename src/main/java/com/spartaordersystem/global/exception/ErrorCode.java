@@ -32,6 +32,7 @@ public enum ErrorCode {
     /*  409 CONFLICT : Resource 중복  */
     ALREADY_EXIST_USERID(409, "이미 존재하는 USERID 입니다."),
     ALREADY_EXIST_CATEGORY(409, "이미 존재하는 카테고리 입니다."),
+    ALREADY_EXIST_ADDRESS(409, "이미 주소가 존재하고 있습니다."),
 
     /*  500 INTERNAL_SERVER_ERROR : 서버 에러  */
     INTERNAL_SERVER_ERROR(500, "내부 서버 에러입니다."),
