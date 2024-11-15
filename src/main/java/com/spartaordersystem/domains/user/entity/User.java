@@ -48,6 +48,10 @@ public class User extends BaseAudit {
         this.nickname = nickname;
     }
 
+    public void setUserAddress(UserAddress userAddress) {
+        this.userAddress = userAddress;
+    }
+
     /**
      * 저희 삭제 소프트딜리트에요  없으셔서 주석 남깁니다! 잊으시면 안돼요!!
      */
