@@ -7,8 +7,10 @@ import com.spartaordersystem.domains.order.repository.OrderRepository;
 import com.spartaordersystem.domains.order_menu.entity.OrderMenu;
 import com.spartaordersystem.domains.order_menu.repository.OrderMenuRepository;
 import com.spartaordersystem.domains.store.entity.Store;
+import com.spartaordersystem.domains.store.enums.StoreStatus;
 import com.spartaordersystem.domains.store.repository.StoreRepository;
 import com.spartaordersystem.domains.storeMenu.entity.StoreMenu;
+import com.spartaordersystem.domains.storeMenu.enums.MenuStatus;
 import com.spartaordersystem.domains.storeMenu.repository.MenuRepository;
 import com.spartaordersystem.domains.user.entity.User;
 import com.spartaordersystem.domains.user.repository.UserRepository;
@@ -38,7 +40,10 @@ public class OrderService {
         User myUser = checkUser(user);
         Store store = getStore(storeId);
 
-//        Hibernate.initialize(user.getUserAddress());
+        if (store.getStoreStatus() == StoreStatus.CLOSE) {
+            throw new CustomException(ErrorCode.STROE_IS_CLOSED);
+        }
+
         UserAddress userAddress = myUser.getUserAddress();
 
         Order order = Order.builder()
@@ -58,6 +63,10 @@ public class OrderService {
                         .map(orderMenuRequest -> {
                             StoreMenu menu = menuRepository.findById(orderMenuRequest.getMenuId())
                                     .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
+
+                            if (menu.getMenuStatus() == MenuStatus.SOLD_OUT) {
+                                throw new CustomException(ErrorCode.MENU_IS_SOLD_OUT);
+                            }
 
                             orderMenuRepository.save(OrderMenu.builder()
                                     .quantity(orderMenuRequest.getQuantity())
