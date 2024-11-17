@@ -2,6 +2,7 @@ package com.spartaordersystem.domains.order.service;
 
 import com.spartaordersystem.domains.UserAddress.entity.UserAddress;
 import com.spartaordersystem.domains.order.controller.dto.CreateOrderDto;
+import com.spartaordersystem.domains.order.controller.dto.GetMyOrderListDto;
 import com.spartaordersystem.domains.order.controller.dto.GetOrderInfoByOwnerDto;
 import com.spartaordersystem.domains.order.controller.dto.GetOrderInfoDto;
 import com.spartaordersystem.domains.order.entity.Order;
@@ -24,6 +25,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
@@ -186,6 +190,41 @@ public class OrderService {
         orderRepository.save(order);
     }
 
+    public List<GetMyOrderListDto.ResponseDto> getMyOrderList(User user) {
+        List<Order> orderList = orderRepository.findByUser(user);
+
+        return orderList.stream()
+                .map(order -> GetMyOrderListDto.ResponseDto.builder()
+                        .orderId(order.getId())
+                        .createdAt(order.getCreatedAt())
+                        .totalPrice(order.getTotalPrice())
+                        .build())
+                .toList();
+    }
+
+    @Transactional
+    public void deleteOrder(User user, UUID orderId) {
+        Order order = getOrder(orderId);
+
+        ZonedDateTime orderCreatedAt = order.getCreatedAt();
+        ZonedDateTime currentTime = ZonedDateTime.now();
+
+        if (ChronoUnit.MINUTES.between(orderCreatedAt, currentTime) > 5) {
+            throw new CustomException(ErrorCode.CAN_NOT_CANCEL_ORDER);
+        }
+
+        if (order.getOrderStatus() != OrderStatus.Pending) {
+            throw new CustomException(ErrorCode.CAN_NOT_CANCEL_ORDER_PROCESS);
+        }
+
+        if (!order.getUser().getId().equals(user.getId())) {
+            throw new CustomException(ErrorCode.FORBIDDEN);
+        }
+
+        order.setOrderStatus(OrderStatus.CANCELLED);
+        orderRepository.save(order);
+    }
+
     private boolean isOrderMatchStore(Order order, Store store) {
         return orderMenuRepository.findByOrder(order).stream()
                 .allMatch(orderMenu -> orderMenu.getMenu().getStore().equals(store));
@@ -196,7 +235,6 @@ public class OrderService {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
     }
-
     private long calculateTotalPrice(List<CreateOrderDto.OrderMenuResponse> orderMenuResponseList) {
         return orderMenuResponseList.stream()
                 .mapToLong(response -> response.getPrice() * response.getQuantity())
@@ -207,12 +245,12 @@ public class OrderService {
         return userRepository.findById(user.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
+
     private void checkUserIsStoreOwner(User user, Store store) {
         if (!store.getUser().getId().equals(user.getId())) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
     }
-
     // 손님이 아니며, 가게주인인지 검증이 필요한 경우
 
     private void checkUserRole(String userRole, User user, Store store) {
@@ -222,6 +260,7 @@ public class OrderService {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
     }
+
     // 손님만 아니면 될 경우
 
     private void checkUserRole(String userRole) {
