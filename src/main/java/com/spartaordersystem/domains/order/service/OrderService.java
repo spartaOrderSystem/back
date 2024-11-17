@@ -2,6 +2,8 @@ package com.spartaordersystem.domains.order.service;
 
 import com.spartaordersystem.domains.UserAddress.entity.UserAddress;
 import com.spartaordersystem.domains.order.controller.dto.CreateOrderDto;
+import com.spartaordersystem.domains.order.controller.dto.GetOrderInfoByOwnerDto;
+import com.spartaordersystem.domains.order.controller.dto.GetOrderInfoDto;
 import com.spartaordersystem.domains.order.entity.Order;
 import com.spartaordersystem.domains.order.repository.OrderRepository;
 import com.spartaordersystem.domains.order_menu.entity.OrderMenu;
@@ -97,6 +99,86 @@ public class OrderService {
                 .build();
     }
 
+    @Transactional
+    public GetOrderInfoDto.ResponseDto getOrderInfo(User user, UUID orderId) {
+        User myUser = checkUser(user);
+        Order order = getOrder(orderId);
+
+        List<OrderMenu> orderMenuList = orderMenuRepository.findByOrder(order);
+
+        List<GetOrderInfoDto.OrderMenuResponse> orderMenuResponseList = orderMenuList.stream()
+                .map(orderMenu -> GetOrderInfoDto.OrderMenuResponse.builder()
+                        .menuId(orderMenu.getMenu().getId())
+                        .menuName(orderMenu.getMenu().getTitle())
+                        .quantity(orderMenu.getQuantity())
+                        .price(orderMenu.getPrice())
+                        .build())
+                .toList();
+
+        long totalPrice = orderMenuList.stream()
+                .mapToLong(orderMenu -> orderMenu.getPrice() * orderMenu.getQuantity()).sum();
+
+        return GetOrderInfoDto.ResponseDto.builder()
+                .orderId(order.getId())
+                .orderType(order.getOrderType())
+                .storeRequest(order.getStoreRequest())
+                .riderRequest(order.getRiderRequest())
+                .orderMenuResponseList(orderMenuResponseList)
+                .totalPrice(totalPrice)
+                .build();
+    }
+
+    @Transactional
+    public GetOrderInfoByOwnerDto.ResponseDto getOrderInfoByOwner(User user, UUID storeId, UUID orderId) {
+        Store store = getStore(storeId);
+        checkUserRole(user.getRole().getAuthority(), user, store);
+        Order order = getOrder(orderId);
+
+        boolean orderIsMatchStore = isOrderMatchStore(order, store);
+
+        if (!orderIsMatchStore) {
+            throw new CustomException(ErrorCode.ORDER_NOT_MATCH_STORE);
+        }
+
+        List<OrderMenu> orderMenuList = orderMenuRepository.findByOrder(order);
+
+        UUID orderStoreId = orderMenuList.get(0).getMenu().getStore().getId();
+
+        List<GetOrderInfoByOwnerDto.OrderMenuResponse> orderMenuResponseList = orderMenuList.stream()
+                .map(orderMenu -> GetOrderInfoByOwnerDto.OrderMenuResponse.builder()
+                        .menuId(orderMenu.getMenu().getId())
+                        .menuName(orderMenu.getMenu().getTitle())
+                        .quantity(orderMenu.getQuantity())
+                        .price(orderMenu.getPrice())
+                        .build())
+                .toList();
+
+        long totalPrice = orderMenuList.stream()
+                .mapToLong(orderMenu -> orderMenu.getPrice() * orderMenu.getQuantity()).sum();
+
+
+        return GetOrderInfoByOwnerDto.ResponseDto.builder()
+                .orderId(order.getId())
+                .storeId(orderStoreId)
+                .orderType(order.getOrderType())
+                .storeRequest(order.getStoreRequest())
+                .riderRequest(order.getRiderRequest())
+                .orderMenuResponseList(orderMenuResponseList)
+                .totalPrice(totalPrice)
+                .build();
+    }
+
+    private boolean isOrderMatchStore(Order order, Store store) {
+        return orderMenuRepository.findByOrder(order).stream()
+                .allMatch(orderMenu -> orderMenu.getMenu().getStore().equals(store));
+    }
+
+
+    private Order getOrder(UUID orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+    }
+
     private long calculateTotalPrice(List<CreateOrderDto.OrderMenuResponse> orderMenuResponseList) {
         return orderMenuResponseList.stream()
                 .mapToLong(response -> response.getPrice() * response.getQuantity())
@@ -113,8 +195,8 @@ public class OrderService {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
     }
-
     // 손님이 아니며, 가게주인인지 검증이 필요한 경우
+
     private void checkUserRole(String userRole, User user, Store store) {
         if (userRole.equals(GlobalConst.ROLE_OWNER)) {
             checkUserIsStoreOwner(user, store);
@@ -122,8 +204,8 @@ public class OrderService {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
     }
-
     // 손님만 아니면 될 경우
+
     private void checkUserRole(String userRole) {
         if (!(userRole.equals(GlobalConst.ROLE_OWNER) || userRole.equals(GlobalConst.ROLE_MANAGER) || userRole.equals(GlobalConst.ROLE_ADMIN))) {
             throw new CustomException(ErrorCode.FORBIDDEN);
