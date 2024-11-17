@@ -92,4 +92,8 @@ public class Order extends BaseAudit {
         this.deletedAt = ZonedDateTime.now();
         this.isDeleted = true;
     }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
 }

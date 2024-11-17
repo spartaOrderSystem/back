@@ -12,6 +12,7 @@ public enum ErrorCode {
     ILLEGAL_ARGUMENT_ERROR(400, "잘못된 파라미터 전달"),
     CATEGORY_IS_DELETED(400, "이미 삭제된 카테고리입니다."),
     INVALID_PAGE_OR_SIZE(400,  "유효하지 않은 페이지입니다."),
+    CAN_NOT_CHANGE_ORDER_STATUS(400,  "가게 상태를 변경할 수 없습니다."),
 
     /*  401 UNAUTHORIZED : 인증 안됨  */
     UNAUTHORIZED(401, "인증되지 않았습니다."),

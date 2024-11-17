@@ -17,7 +17,6 @@ public class CreateOrderDto {
     @NoArgsConstructor
     @Builder
     public static class RequestDto {
-        private OrderStatus orderStatus;
         private OrderType orderType;
         private List<OrderMenuRequest> orderMenuRequestList;
     }
@@ -39,6 +38,7 @@ public class CreateOrderDto {
         private UUID orderId;
         private UUID storeId;
         private OrderType orderType;
+        private OrderStatus orderStatus;
         private String storeRequest;
         private String riderRequest;
         private List<OrderMenuResponse> orderMenuResponseList;

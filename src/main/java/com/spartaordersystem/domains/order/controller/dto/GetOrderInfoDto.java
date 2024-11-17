@@ -1,5 +1,6 @@
 package com.spartaordersystem.domains.order.controller.dto;
 
+import com.spartaordersystem.domains.order.enums.OrderStatus;
 import com.spartaordersystem.domains.order.enums.OrderType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,7 @@ public class GetOrderInfoDto {
     public static class ResponseDto {
         private UUID orderId;
         private OrderType orderType;
+        private OrderStatus orderStatus;
         private String storeRequest;
         private String riderRequest;
         private List<GetOrderInfoDto.OrderMenuResponse> orderMenuResponseList;
