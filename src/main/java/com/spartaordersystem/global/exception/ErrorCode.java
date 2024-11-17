@@ -29,6 +29,7 @@ public enum ErrorCode {
     STORE_NOT_FOUND(404, "카테고리를 찾을 수 없습니다."),
     MENU_NOT_FOUND(404, "메뉴를 찾을 수 없습니다."),
     ORDER_NOT_FOUND(404, "주문내역을 찾을 수 없습니다."),
+    PAYMENT_NOT_FOUND(404, "결제내역을 찾을 수 없습니다."),
     MENU_IS_SOLD_OUT(404, "품절된 메뉴입니다."),
     STROE_IS_CLOSED(404, "가게 영업시간이 아닙니다."),
     ORDER_NOT_MATCH_STORE(404, "해당 주문과 연결된 가게가 존재하지 않습니다."),
