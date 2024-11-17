@@ -25,6 +25,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
@@ -199,6 +202,25 @@ public class OrderService {
                 .toList();
     }
 
+    @Transactional
+    public void deleteOrder(User user, UUID orderId) {
+        Order order = getOrder(orderId);
+
+        ZonedDateTime orderCreatedAt = order.getCreatedAt();
+        ZonedDateTime currentTime = ZonedDateTime.now();
+
+        if (ChronoUnit.MINUTES.between(orderCreatedAt, currentTime) > 5) {
+            throw new CustomException(ErrorCode.CAN_NOT_CANCEL_ORDER);
+        }
+
+        if (!order.getUser().getId().equals(user.getId())) {
+            throw new CustomException(ErrorCode.FORBIDDEN);
+        }
+
+        order.setOrderStatus(OrderStatus.CANCELLED);
+        orderRepository.save(order);
+    }
+
     private boolean isOrderMatchStore(Order order, Store store) {
         return orderMenuRepository.findByOrder(order).stream()
                 .allMatch(orderMenu -> orderMenu.getMenu().getStore().equals(store));
@@ -209,12 +231,12 @@ public class OrderService {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
     }
-
     private long calculateTotalPrice(List<CreateOrderDto.OrderMenuResponse> orderMenuResponseList) {
         return orderMenuResponseList.stream()
                 .mapToLong(response -> response.getPrice() * response.getQuantity())
                 .sum();
     }
+
     private User checkUser(User user) {
         return userRepository.findById(user.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -225,8 +247,8 @@ public class OrderService {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
     }
-
     // 손님이 아니며, 가게주인인지 검증이 필요한 경우
+
     private void checkUserRole(String userRole, User user, Store store) {
         if (userRole.equals(GlobalConst.ROLE_OWNER)) {
             checkUserIsStoreOwner(user, store);

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -79,4 +80,15 @@ public class OrderController {
         BaseResponse response = BaseResponse.toSuccessResponse("내 주문 목록 조회 성공", myOrderList);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/orders/{orderId}")
+    public ResponseEntity<BaseResponse> deleteOrder(
+            @AuthenticationPrincipal User user,
+            @PathVariable UUID orderId
+    ) {
+        orderService.deleteOrder(user, orderId);
+        BaseResponse response = BaseResponse.toSuccessResponse("주문 취소 성공");
+        return ResponseEntity.ok(response);
+    }
+
 }
