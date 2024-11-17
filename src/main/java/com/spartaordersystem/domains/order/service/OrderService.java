@@ -25,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -47,7 +46,7 @@ public class OrderService {
         Store store = getStore(storeId);
 
         if (store.getStoreStatus() == StoreStatus.CLOSE) {
-            throw new CustomException(ErrorCode.STROE_IS_CLOSED);
+            throw new CustomException(ErrorCode.STORE_IS_CLOSED);
         }
 
         UserAddress userAddress = myUser.getUserAddress();

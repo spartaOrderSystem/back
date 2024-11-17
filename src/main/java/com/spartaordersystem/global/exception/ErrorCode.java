@@ -14,7 +14,10 @@ public enum ErrorCode {
     INVALID_PAGE_OR_SIZE(400,  "유효하지 않은 페이지입니다."),
     CAN_NOT_CHANGE_ORDER_STATUS(400,  "가게 상태를 변경할 수 없습니다."),
     CAN_NOT_CANCEL_ORDER(400,  "5분이 경과되어 주문을 취소할 수 없습니다."),
-    CAN_NOT_CANCEL_ORDER_PROCESS(400,  "결제가 진행중이어서 주문을 취소할 수 없습니다."),
+    CAN_NOT_CANCEL_ORDER_PROCESS(400,  "결제가 진행중 이어서 주문을 취소할 수 없습니다."),
+    CAN_NOT_UPDATE_PAYMENT_STATUS(400,  "결제 상태를 변경할 수 없습니다."),
+    REQUIRED_FAILURE_REASON(400,  "결제 실패 이유를 제공해야 합니다."),
+    MISMATCH(400,  "두 값이 일치하지 않습니다."),
 
     /*  401 UNAUTHORIZED : 인증 안됨  */
     UNAUTHORIZED(401, "인증되지 않았습니다."),
@@ -31,7 +34,7 @@ public enum ErrorCode {
     ORDER_NOT_FOUND(404, "주문내역을 찾을 수 없습니다."),
     PAYMENT_NOT_FOUND(404, "결제내역을 찾을 수 없습니다."),
     MENU_IS_SOLD_OUT(404, "품절된 메뉴입니다."),
-    STROE_IS_CLOSED(404, "가게 영업시간이 아닙니다."),
+    STORE_IS_CLOSED(404, "가게 영업시간이 아닙니다."),
     ORDER_NOT_MATCH_STORE(404, "해당 주문과 연결된 가게가 존재하지 않습니다."),
 
     /*  408 REQUEST_TIMEOUT : 요청에 대한 응답 시간 초과  */
