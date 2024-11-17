@@ -54,6 +54,9 @@ public class Order extends BaseAudit {
     @Column
     private String riderRequest;
 
+    @Column
+    private long totalPrice;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -95,5 +98,9 @@ public class Order extends BaseAudit {
 
     public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public void setTotalPrice(long totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }
