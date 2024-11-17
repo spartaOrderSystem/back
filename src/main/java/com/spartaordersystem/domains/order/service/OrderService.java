@@ -5,6 +5,7 @@ import com.spartaordersystem.domains.order.controller.dto.CreateOrderDto;
 import com.spartaordersystem.domains.order.controller.dto.GetOrderInfoByOwnerDto;
 import com.spartaordersystem.domains.order.controller.dto.GetOrderInfoDto;
 import com.spartaordersystem.domains.order.entity.Order;
+import com.spartaordersystem.domains.order.enums.OrderStatus;
 import com.spartaordersystem.domains.order.repository.OrderRepository;
 import com.spartaordersystem.domains.order_menu.entity.OrderMenu;
 import com.spartaordersystem.domains.order_menu.repository.OrderMenuRepository;
@@ -53,7 +54,7 @@ public class OrderService {
                 .detailAddress(userAddress.getDetailAddress())
                 .storeRequest(userAddress.getStoreRequest())
                 .riderRequest(userAddress.getRiderRequest())
-                .orderStatus(requestDto.getOrderStatus())
+                .orderStatus(OrderStatus.Pending)
                 .orderType(requestDto.getOrderType())
                 .user(user)
                 .build();
@@ -92,6 +93,7 @@ public class OrderService {
                 .orderId(order.getId())
                 .storeId(storeId)
                 .orderType(requestDto.getOrderType())
+                .orderStatus(order.getOrderStatus())
                 .storeRequest(order.getStoreRequest())
                 .riderRequest(order.getRiderRequest())
                 .orderMenuResponseList(orderMenuResponseList)
@@ -121,6 +123,7 @@ public class OrderService {
         return GetOrderInfoDto.ResponseDto.builder()
                 .orderId(order.getId())
                 .orderType(order.getOrderType())
+                .orderStatus(order.getOrderStatus())
                 .storeRequest(order.getStoreRequest())
                 .riderRequest(order.getRiderRequest())
                 .orderMenuResponseList(orderMenuResponseList)
@@ -161,11 +164,28 @@ public class OrderService {
                 .orderId(order.getId())
                 .storeId(orderStoreId)
                 .orderType(order.getOrderType())
+                .orderStatus(order.getOrderStatus())
                 .storeRequest(order.getStoreRequest())
                 .riderRequest(order.getRiderRequest())
                 .orderMenuResponseList(orderMenuResponseList)
                 .totalPrice(totalPrice)
                 .build();
+    }
+
+    public void updateStoreStatus(User user, UUID storeId, UUID orderId) {
+        Store store = getStore(storeId);
+        checkUserRole(user.getRole().getAuthority(), user, store);
+        Order order = getOrder(orderId);
+
+        switch (order.getOrderStatus()) {
+            case Pending -> order.setOrderStatus(OrderStatus.Confirmed);
+            case Confirmed -> order.setOrderStatus(OrderStatus.CHECKING_ORDER);
+            case CHECKING_ORDER -> order.setOrderStatus(OrderStatus.COOKING);
+            case COOKING -> order.setOrderStatus(OrderStatus.DELIVERING);
+            default -> throw new CustomException(ErrorCode.CAN_NOT_CHANGE_ORDER_STATUS);
+        }
+
+        orderRepository.save(order);
     }
 
     private boolean isOrderMatchStore(Order order, Store store) {
@@ -189,12 +209,12 @@ public class OrderService {
         return userRepository.findById(user.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
-
     private void checkUserIsStoreOwner(User user, Store store) {
         if (!store.getUser().getId().equals(user.getId())) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
     }
+
     // 손님이 아니며, 가게주인인지 검증이 필요한 경우
 
     private void checkUserRole(String userRole, User user, Store store) {

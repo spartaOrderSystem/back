@@ -1,6 +1,6 @@
 package com.spartaordersystem.domains.order.enums;
 
 public enum OrderStatus {
-    CHECKING_ORDER, COOKING, DELIVERING
+    Pending, Confirmed, CHECKING_ORDER, COOKING, DELIVERING, CANCELLED
 
 }

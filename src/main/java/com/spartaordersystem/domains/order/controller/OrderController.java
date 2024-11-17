@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -54,6 +55,17 @@ public class OrderController {
     ) {
         GetOrderInfoByOwnerDto.ResponseDto responseDto = orderService.getOrderInfoByOwner(user, storeId, orderId);
         BaseResponse response = BaseResponse.toSuccessResponse("주문 단건 조회 성공", responseDto);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/stores/{storeId}/orders/{orderId}/status")
+    public ResponseEntity<BaseResponse> updateStoreStatus(
+            @AuthenticationPrincipal User user,
+            @PathVariable UUID storeId,
+            @PathVariable UUID orderId
+    ) {
+        orderService.updateStoreStatus(user, storeId, orderId);
+        BaseResponse response = BaseResponse.toSuccessResponse("주문 상태 정보가 수정되었습니다.");
         return ResponseEntity.ok(response);
     }
 }
