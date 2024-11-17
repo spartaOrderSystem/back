@@ -213,6 +213,10 @@ public class OrderService {
             throw new CustomException(ErrorCode.CAN_NOT_CANCEL_ORDER);
         }
 
+        if (order.getOrderStatus() != OrderStatus.Pending) {
+            throw new CustomException(ErrorCode.CAN_NOT_CANCEL_ORDER_PROCESS);
+        }
+
         if (!order.getUser().getId().equals(user.getId())) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }

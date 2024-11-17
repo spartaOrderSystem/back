@@ -14,6 +14,7 @@ public enum ErrorCode {
     INVALID_PAGE_OR_SIZE(400,  "유효하지 않은 페이지입니다."),
     CAN_NOT_CHANGE_ORDER_STATUS(400,  "가게 상태를 변경할 수 없습니다."),
     CAN_NOT_CANCEL_ORDER(400,  "5분이 경과되어 주문을 취소할 수 없습니다."),
+    CAN_NOT_CANCEL_ORDER_PROCESS(400,  "결제가 진행중이어서 주문을 취소할 수 없습니다."),
 
     /*  401 UNAUTHORIZED : 인증 안됨  */
     UNAUTHORIZED(401, "인증되지 않았습니다."),
