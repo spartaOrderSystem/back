@@ -1,6 +1,7 @@
 package com.spartaordersystem.domains.order.controller;
 
 import com.spartaordersystem.domains.order.controller.dto.CreateOrderDto;
+import com.spartaordersystem.domains.order.controller.dto.GetMyOrderListDto;
 import com.spartaordersystem.domains.order.controller.dto.GetOrderInfoByOwnerDto;
 import com.spartaordersystem.domains.order.controller.dto.GetOrderInfoDto;
 import com.spartaordersystem.domains.order.service.OrderService;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -69,13 +71,12 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
-//    @GetMapping("/users/{userId}/orders")
-//    public ResponseEntity<BaseResponse> getMyOrderList(
-//            @AuthenticationPrincipal User user,
-//            @PathVariable Long userId
-//    ) {
-//         totalPrice를 각 주문마다 리턴해줘야하는데 지금 로직으로는
-//            매 주문에서 직접 계산해줘야하므로 성능이 떨어진다.
-//          그래서 결제를 구현하고 결제에 저장된 총 금액을 각 주문마다 리턴해서 보여주는것이 훨씬 나을 것 같다
-//    }
+    @GetMapping("/users/orders")
+    public ResponseEntity<BaseResponse> getMyOrderList(
+            @AuthenticationPrincipal User user
+    ) {
+        List<GetMyOrderListDto.ResponseDto> myOrderList = orderService.getMyOrderList(user);
+        BaseResponse response = BaseResponse.toSuccessResponse("내 주문 목록 조회 성공", myOrderList);
+        return ResponseEntity.ok(response);
+    }
 }

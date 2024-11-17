@@ -2,6 +2,7 @@ package com.spartaordersystem.domains.order.service;
 
 import com.spartaordersystem.domains.UserAddress.entity.UserAddress;
 import com.spartaordersystem.domains.order.controller.dto.CreateOrderDto;
+import com.spartaordersystem.domains.order.controller.dto.GetMyOrderListDto;
 import com.spartaordersystem.domains.order.controller.dto.GetOrderInfoByOwnerDto;
 import com.spartaordersystem.domains.order.controller.dto.GetOrderInfoDto;
 import com.spartaordersystem.domains.order.entity.Order;
@@ -186,6 +187,18 @@ public class OrderService {
         orderRepository.save(order);
     }
 
+    public List<GetMyOrderListDto.ResponseDto> getMyOrderList(User user) {
+        List<Order> orderList = orderRepository.findByUser(user);
+
+        return orderList.stream()
+                .map(order -> GetMyOrderListDto.ResponseDto.builder()
+                        .orderId(order.getId())
+                        .createdAt(order.getCreatedAt())
+                        .totalPrice(order.getTotalPrice())
+                        .build())
+                .toList();
+    }
+
     private boolean isOrderMatchStore(Order order, Store store) {
         return orderMenuRepository.findByOrder(order).stream()
                 .allMatch(orderMenu -> orderMenu.getMenu().getStore().equals(store));
@@ -202,11 +215,11 @@ public class OrderService {
                 .mapToLong(response -> response.getPrice() * response.getQuantity())
                 .sum();
     }
-
     private User checkUser(User user) {
         return userRepository.findById(user.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
+
     private void checkUserIsStoreOwner(User user, Store store) {
         if (!store.getUser().getId().equals(user.getId())) {
             throw new CustomException(ErrorCode.FORBIDDEN);
@@ -214,7 +227,6 @@ public class OrderService {
     }
 
     // 손님이 아니며, 가게주인인지 검증이 필요한 경우
-
     private void checkUserRole(String userRole, User user, Store store) {
         if (userRole.equals(GlobalConst.ROLE_OWNER)) {
             checkUserIsStoreOwner(user, store);
@@ -222,6 +234,7 @@ public class OrderService {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
     }
+
     // 손님만 아니면 될 경우
 
     private void checkUserRole(String userRole) {
