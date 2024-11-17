@@ -21,7 +21,6 @@ import com.spartaordersystem.global.common.GlobalConst;
 import com.spartaordersystem.global.exception.CustomException;
 import com.spartaordersystem.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,6 +86,7 @@ public class OrderService {
                         .toList();
 
         long totalPrice = calculateTotalPrice(orderMenuResponseList);
+        order.setTotalPrice(totalPrice);
 
 
         return CreateOrderDto.ResponseDto.builder()
@@ -117,8 +117,7 @@ public class OrderService {
                         .build())
                 .toList();
 
-        long totalPrice = orderMenuList.stream()
-                .mapToLong(orderMenu -> orderMenu.getPrice() * orderMenu.getQuantity()).sum();
+        long totalPrice = order.getTotalPrice();
 
         return GetOrderInfoDto.ResponseDto.builder()
                 .orderId(order.getId())
@@ -156,8 +155,7 @@ public class OrderService {
                         .build())
                 .toList();
 
-        long totalPrice = orderMenuList.stream()
-                .mapToLong(orderMenu -> orderMenu.getPrice() * orderMenu.getQuantity()).sum();
+        long totalPrice = order.getTotalPrice();
 
 
         return GetOrderInfoByOwnerDto.ResponseDto.builder()
