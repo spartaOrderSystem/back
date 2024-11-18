@@ -1,6 +1,5 @@
 package com.spartaordersystem.domains.store.repository;
 
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -10,14 +9,13 @@ import com.spartaordersystem.domains.store.enums.StoreStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import java.util.List;
 
 import static com.spartaordersystem.domains.store.entity.QStore.store;
 
 
-public class StoreRepositoryCustomImpl implements StoreRepositoryCustom { //extends QuerydslRepositorySupport ? 생성자의 Class 를 찾을 수 없다 함
+public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     public StoreRepositoryCustomImpl(JPAQueryFactory queryFactory) {
@@ -26,17 +24,16 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom { //exte
 
 
     @Override
-//    public Page<Store> getStoresBySearchOptions(Pageable pageable, String status, String categoryId) {
     public Page<Store> getStoresBySearchOptions(Pageable pageable, String title, StoreStatus status, Category category) {
         JPQLQuery<Store> query = queryFactory.selectFrom(store)
-                .where(containsTitle(title), eqStatus(status), eqCategory(category))
+                .where(containsTitle(title), eqStatus(status), eqCategory(category)) // and 조건으로 묶임
                 .offset(pageable.getOffset()) // 페이지 번호 - 0부터 시작
                 .limit(pageable.getPageSize()) // 페이지 사이즈
-                .orderBy(store.createdAt.desc());
+                .orderBy(store.createdAt.desc(), store.updatedAt.desc());
+
         List<Store> stores = query.fetch();
         return new PageImpl<Store>(stores, pageable, query.fetchCount());
 
-//        Page<Store> stores = this.getQuerydsl().applyPagination(pageable, query).fetch(); //extends QuerydslRepositorySupport
 
     }
 

@@ -8,6 +8,5 @@ import org.springframework.data.domain.Pageable;
 
 
 public interface StoreRepositoryCustom {
-//    Page<Store> getStoresBySearchOptions(Pageable pageable, String status, String categoryId);
     Page<Store> getStoresBySearchOptions(Pageable pageable, String title, StoreStatus status, Category category);
 }
