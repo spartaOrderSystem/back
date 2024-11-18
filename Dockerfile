@@ -11,7 +11,7 @@ ARG JAR_FILE=build/libs/spartaOrderSystem-0.0.1-SNAPSHOT.jar
 # 환경변수 설정
 # ENV [환경변수명] [값]
 
-#jar 파일을 컨테이너 내부로 복사해오고 새 이름(jh-order-system.jar)을 지정(소문자만 가능)
+#jar 파일을 컨테이너 내부로 복사해오고 새 이름(order-system.jar)을 지정(소문자만 가능)
 COPY ${JAR_FILE} order-system.jar
 
 #외부 호스트 8080 포트로 노출
