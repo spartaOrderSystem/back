@@ -5,6 +5,7 @@ import com.spartaordersystem.domains.category.repository.CategoryRepository;
 import com.spartaordersystem.domains.category.service.StoreCategoryService;
 import com.spartaordersystem.domains.store.controller.dto.CreateStoreDto;
 import com.spartaordersystem.domains.store.controller.dto.GetStoreDto;
+import com.spartaordersystem.domains.store.controller.dto.SearchStoreDto;
 import com.spartaordersystem.domains.store.controller.dto.UpdateStoreDto;
 import com.spartaordersystem.domains.store.entity.Store;
 import com.spartaordersystem.domains.store.enums.StoreStatus;
@@ -15,11 +16,16 @@ import com.spartaordersystem.global.common.GlobalConst;
 import com.spartaordersystem.global.exception.CustomException;
 import com.spartaordersystem.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.UUID;
+
 
 @Service
 @RequiredArgsConstructor
@@ -125,6 +131,17 @@ public class StoreService {
     }
 
 
+    public List<SearchStoreDto.ResponseDto> searchStore(Integer page, Integer size, String title, UUID categoryId, String storeStatusName) {
+        Pageable pageRequest = PageRequest.of(page, size);
+        Category category = (categoryId != null) ? getCategory(categoryId) : null;
+        StoreStatus storeStatus = (storeStatusName != null) ? StoreStatus.valueOf(storeStatusName) : null;
+
+        Page<Store> stores = storeRepository.getStoresBySearchOptions(pageRequest, title, storeStatus, category);
+        List<SearchStoreDto.ResponseDto> responseDtos = SearchStoreDto.ResponseDto.toDtos(stores);
+        return responseDtos;
+    }
+
+
     private void checkUser(User user) {
         userRepository.findById(user.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -163,5 +180,10 @@ public class StoreService {
     private Store getStore(UUID storeId) {
         return storeRepository.findById(storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
+    }
+
+    private Category getCategory(UUID categoryId) {
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 }
