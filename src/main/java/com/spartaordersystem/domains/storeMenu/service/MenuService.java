@@ -3,10 +3,7 @@ package com.spartaordersystem.domains.storeMenu.service;
 import com.spartaordersystem.domains.ai.service.PromptService;
 import com.spartaordersystem.domains.store.entity.Store;
 import com.spartaordersystem.domains.store.repository.StoreRepository;
-import com.spartaordersystem.domains.storeMenu.controller.dto.CreateMenuDto;
-import com.spartaordersystem.domains.storeMenu.controller.dto.GetMenuDto;
-import com.spartaordersystem.domains.storeMenu.controller.dto.GetMenuListDto;
-import com.spartaordersystem.domains.storeMenu.controller.dto.UpdateMenuDto;
+import com.spartaordersystem.domains.storeMenu.controller.dto.*;
 import com.spartaordersystem.domains.storeMenu.entity.StoreMenu;
 import com.spartaordersystem.domains.storeMenu.enums.MenuStatus;
 import com.spartaordersystem.domains.storeMenu.repository.MenuRepository;
@@ -15,6 +12,9 @@ import com.spartaordersystem.global.common.GlobalConst;
 import com.spartaordersystem.global.exception.CustomException;
 import com.spartaordersystem.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -126,6 +126,16 @@ public class MenuService {
                 .toList();
     }
 
+    public List<SearchMenuDto.ResponseDto> searchMenu(Integer page, Integer size, String keyword, Long minPrice, Long maxPrice, String menuStatusName) {
+        Pageable pageRequest = PageRequest.of(page, size);
+        MenuStatus menuStatus = (menuStatusName != null) ? MenuStatus.valueOf(menuStatusName) : null;
+
+        Page<StoreMenu> menus = menuRepository.getMenusBySearchOptions(pageRequest, keyword, minPrice, maxPrice, menuStatus);
+        List<SearchMenuDto.ResponseDto> responseDtos = SearchMenuDto.ResponseDto.toDtos(menus);
+        return responseDtos;
+    }
+
+    
     private void checkUserIsStoreOwner(User user, Store store) {
         if (!store.getUser().getId().equals(user.getId())) {
             throw new CustomException(ErrorCode.FORBIDDEN);

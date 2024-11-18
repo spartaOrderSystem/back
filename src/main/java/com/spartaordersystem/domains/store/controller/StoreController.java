@@ -7,6 +7,8 @@ import com.spartaordersystem.domains.store.controller.dto.SearchStoreDto;
 import com.spartaordersystem.domains.store.controller.dto.UpdateStoreDto;
 import com.spartaordersystem.domains.store.service.StoreService;
 import com.spartaordersystem.domains.user.entity.User;
+import com.spartaordersystem.global.exception.CustomException;
+import com.spartaordersystem.global.exception.ErrorCode;
 import com.spartaordersystem.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +19,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -82,14 +86,24 @@ public class StoreController {
     @GetMapping
     public ResponseEntity<BaseResponse> searchStore(
             @RequestParam(required = false, defaultValue = "0") Integer page,
-            @RequestParam(required = false, defaultValue = "3") Integer size,
+            @RequestParam(required = false, defaultValue = "10") Integer size,
             @RequestParam(required = false) String title,
             @RequestParam(required = false) UUID categoryId,
             @RequestParam(required = false) String storeStatus) {
         log.info("StoreController > searchStore title : {}, categoryId : {}, storeStatus : {}", title, categoryId, storeStatus);
+
+        checkPagenationInfos(page, size);
+
         List<SearchStoreDto.ResponseDto> responseDtos = storeService.searchStore(page, size, title, categoryId, storeStatus);
         BaseResponse response = BaseResponse.toSuccessResponse("가게 검색에 성공하였습니다.", responseDtos);
         return ResponseEntity.ok(response);
+    }
+
+    private void checkPagenationInfos(Integer page, Integer size) {
+        List<Integer> sizeList = new ArrayList<>(Arrays.asList(10, 30, 50));
+        if(page < 0 || size < 0 || !sizeList.contains(size)) {
+            throw new CustomException(ErrorCode.INVALID_PAGE_OR_SIZE);
+        }
     }
 
 }
