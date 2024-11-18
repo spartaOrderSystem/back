@@ -1,6 +1,7 @@
 package com.spartaordersystem.domains.review.entity;
 
 
+import com.spartaordersystem.domains.review.controller.dto.UpdateReviewDto;
 import com.spartaordersystem.domains.store.entity.Store;
 import com.spartaordersystem.domains.user.entity.User;
 import com.spartaordersystem.domains.order.entity.Order;
@@ -25,8 +26,10 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -86,6 +89,11 @@ public class Review extends BaseAudit {
         this.deletedBy = username;
         this.deletedAt = ZonedDateTime.now();
         this.isDeleted = true;
+    }
+
+    @Transactional
+    public void updateContent(UpdateReviewDto.RequestDto requestDto) {
+        this.content = Optional.ofNullable(requestDto.getContent()).orElse(this.content);
     }
 
 }
