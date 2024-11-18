@@ -78,7 +78,7 @@ public class PaymentService {
         Payment payment = getPayment(paymentId);
 
         if (!payment.getOrder().getId().equals(requestDto.getOrderId())) {
-            throw new CustomException(ErrorCode.MISMATCH);
+            throw new CustomException(ErrorCode.ORDER_MISMATCH);
         }
 
         if (payment.getPaymentStatus() != PaymentStatus.PENDING) {
