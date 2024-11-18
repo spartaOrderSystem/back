@@ -26,10 +26,11 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     @Override
     public Page<Store> getStoresBySearchOptions(Pageable pageable, String title, StoreStatus status, Category category) {
         JPQLQuery<Store> query = queryFactory.selectFrom(store)
-                .where(containsTitle(title), eqStatus(status), eqCategory(category))
+                .where(containsTitle(title), eqStatus(status), eqCategory(category)) // and 조건으로 묶임
                 .offset(pageable.getOffset()) // 페이지 번호 - 0부터 시작
                 .limit(pageable.getPageSize()) // 페이지 사이즈
-                .orderBy(store.createdAt.desc());
+                .orderBy(store.createdAt.desc(), store.updatedAt.desc());
+
         List<Store> stores = query.fetch();
         return new PageImpl<Store>(stores, pageable, query.fetchCount());
 
