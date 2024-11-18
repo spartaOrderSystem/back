@@ -46,6 +46,16 @@ dependencies {
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    // QueryDSL JPA
+    // implementation 'com.querydsl:querydsl-jpa' // 오류 : 스프링 3.0 부터 javax 가 아닌 jakarta 사용하여 명시해줘야 함
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+
+    // QFile 생성 및 가져오기
+    //annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"  // 오류 : 스프링 3.0 부터 javax 가 아닌 jakarta 사용하여 명시해줘야 함
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+
 }
 
 tasks.named('test') {
