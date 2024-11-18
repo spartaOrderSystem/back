@@ -129,6 +129,7 @@ public class StoreService {
                 .closeTime(store.getCloseTime())
                 .phoneNumber(store.getPhoneNumber())
                 .categoryName(store.getCategory().getName())
+                .avgStar(store.getAvgStar())
                 .build();
     }
 
