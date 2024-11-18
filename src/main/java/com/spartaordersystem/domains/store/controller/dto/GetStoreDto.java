@@ -21,5 +21,6 @@ public class GetStoreDto {
         private ZonedDateTime closeTime;
         private String phoneNumber;
         private String categoryName;
+        private double avgStar;
     }
 }
