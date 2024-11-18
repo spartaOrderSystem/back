@@ -4,14 +4,20 @@ import com.spartaordersystem.domains.order.entity.Order;
 import com.spartaordersystem.domains.order.repository.OrderRepository;
 import com.spartaordersystem.domains.order_menu.repository.OrderMenuRepository;
 import com.spartaordersystem.domains.review.controller.dto.CreateReviewDto;
+import com.spartaordersystem.domains.review.controller.dto.GetReviewDto;
 import com.spartaordersystem.domains.review.controller.dto.UpdateReviewDto;
 import com.spartaordersystem.domains.review.entity.Review;
 import com.spartaordersystem.domains.review.repository.ReviewRepository;
 import com.spartaordersystem.domains.store.entity.Store;
+import com.spartaordersystem.domains.store.repository.StoreRepository;
 import com.spartaordersystem.domains.user.entity.User;
 import com.spartaordersystem.global.exception.CustomException;
 import com.spartaordersystem.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +32,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final OrderRepository orderRepository;
     private final OrderMenuRepository orderMenuRepository;
+    private final StoreRepository storeRepository;
 
     @Transactional
     public CreateReviewDto.ResponseDto createReview(User user, UUID storeId, CreateReviewDto.RequestDto requestDto) {
@@ -89,6 +96,52 @@ public class ReviewService {
                 .build();
     }
 
+    @Transactional
+    public Page<GetReviewDto.ResponseDto> getMyReviewList(User user, int page, int size) {
+        if (page < 0 || size <= 0) {
+            throw new CustomException(ErrorCode.INVALID_PAGE_OR_SIZE);
+        }
+
+        int pageSize = (size == 10 || size == 30 || size == 50) ? size : 10;
+        Sort sort = Sort.by("createdAt").descending();
+
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+
+        Page<Review> reviewPage = reviewRepository.findByUser(user, pageable);
+
+        return reviewPage.map(review -> GetReviewDto.ResponseDto.builder()
+                .reviewId(review.getId())
+                .star(review.getStar())
+                .content(review.getContent())
+                .createdAt(review.getCreatedAt())
+                .storeName(review.getStore().getTitle())
+                .build());
+    }
+
+    @Transactional
+    public Page<GetReviewDto.ResponseDto> getStoreReviewList(UUID storeId, int page, int size) {
+        Store store = getStore(storeId);
+
+        if (page < 0 || size <= 0) {
+            throw new CustomException(ErrorCode.INVALID_PAGE_OR_SIZE);
+        }
+
+        int pageSize = (size == 10 || size == 30 || size == 50) ? size : 10;
+        Sort sort = Sort.by("createdAt").descending();
+
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+
+        Page<Review> reviewPage = reviewRepository.findByStore(store, pageable);
+
+        return reviewPage.map(review -> GetReviewDto.ResponseDto.builder()
+                .reviewId(review.getId())
+                .star(review.getStar())
+                .content(review.getContent())
+                .createdAt(review.getCreatedAt())
+                .userName(review.getUser().getNickname())
+                .build());
+    }
+
     private void checkReviewAlreadyExists(Order order) {
         reviewRepository.existsByOrder(order)
                 .orElseThrow(() -> new CustomException(ErrorCode.ALREADY_EXISTS_REVIEW));
@@ -97,5 +150,10 @@ public class ReviewService {
     private Order getOrder(UUID orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+    }
+
+    private Store getStore(UUID storeId) {
+        return storeRepository.findById(storeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
     }
 }
