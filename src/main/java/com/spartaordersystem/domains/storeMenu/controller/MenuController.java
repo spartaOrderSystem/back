@@ -1,9 +1,6 @@
 package com.spartaordersystem.domains.storeMenu.controller;
 
-import com.spartaordersystem.domains.storeMenu.controller.dto.CreateMenuDto;
-import com.spartaordersystem.domains.storeMenu.controller.dto.GetMenuDto;
-import com.spartaordersystem.domains.storeMenu.controller.dto.GetMenuListDto;
-import com.spartaordersystem.domains.storeMenu.controller.dto.UpdateMenuDto;
+import com.spartaordersystem.domains.storeMenu.controller.dto.*;
 import com.spartaordersystem.domains.storeMenu.service.MenuService;
 import com.spartaordersystem.domains.user.entity.User;
 import com.spartaordersystem.global.response.BaseResponse;
@@ -85,7 +82,7 @@ public class MenuController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/stores/{storeId}/menus")
+    @GetMapping("/{storeId}/menus")
     public ResponseEntity<BaseResponse> getMenuList(
             @PathVariable UUID storeId
     ) {
