@@ -1,14 +1,12 @@
-package com.spartaordersystem.domains.UserAddress.entity;
+package com.spartaordersystem.domains.userAddress.entity;
 
-import com.spartaordersystem.domains.UserAddress.controller.dto.UpdateUserAddressDto;
-import com.spartaordersystem.domains.store.controller.dto.UpdateStoreDto;
 import com.spartaordersystem.domains.user.entity.User;
+import com.spartaordersystem.domains.userAddress.controller.dto.UpdateUserAddressDto;
 import com.spartaordersystem.global.common.BaseAudit;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -69,14 +67,22 @@ public class UserAddress extends BaseAudit {
         this.user = user;
     }
 
+
+    // 주소는 리퀘스트dto에서 null을 받으면 기존값을 유지하고  나머지는 null을 받으면 기존값도 null로 변경
+    @Transactional
+    public void updateUserAddress(UpdateUserAddressDto.RequestDto requestDto) {
+        this.address = Optional.ofNullable(requestDto.getAddress()).orElse(this.address);
+        this.detailAddress = requestDto.getDetailAddress();
+        this.storeRequest = requestDto.getStoreRequest();
+        this.riderRequest = requestDto.getRiderRequest();
+    }
+
     public void setDeleted(String username) {
         this.deletedBy = username;
         this.deletedAt = ZonedDateTime.now();
         this.isDeleted = true;
     }
 
-//    public void setUser(User user) {
-//        this.user = user;
-//    }
+
 
 }

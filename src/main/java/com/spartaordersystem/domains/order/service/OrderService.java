@@ -1,6 +1,6 @@
 package com.spartaordersystem.domains.order.service;
 
-import com.spartaordersystem.domains.UserAddress.entity.UserAddress;
+import com.spartaordersystem.domains.userAddress.entity.UserAddress;
 import com.spartaordersystem.domains.order.controller.dto.CreateOrderDto;
 import com.spartaordersystem.domains.order.controller.dto.GetMyOrderListDto;
 import com.spartaordersystem.domains.order.controller.dto.GetOrderInfoByOwnerDto;

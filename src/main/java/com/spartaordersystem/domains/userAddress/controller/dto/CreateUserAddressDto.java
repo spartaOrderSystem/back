@@ -1,4 +1,4 @@
-package com.spartaordersystem.domains.UserAddress.controller.dto;
+package com.spartaordersystem.domains.userAddress.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
