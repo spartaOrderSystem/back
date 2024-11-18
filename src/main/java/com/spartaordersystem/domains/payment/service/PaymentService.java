@@ -1,6 +1,7 @@
 package com.spartaordersystem.domains.payment.service;
 
 import com.spartaordersystem.domains.order.entity.Order;
+import com.spartaordersystem.domains.order.enums.OrderStatus;
 import com.spartaordersystem.domains.order.repository.OrderRepository;
 import com.spartaordersystem.domains.payment.controller.dto.CreatePaymentDto;
 import com.spartaordersystem.domains.payment.controller.dto.GetPaymentDto;
@@ -16,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Service

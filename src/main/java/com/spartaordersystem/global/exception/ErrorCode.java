@@ -18,6 +18,7 @@ public enum ErrorCode {
     CAN_NOT_UPDATE_PAYMENT_STATUS(400,  "결제 상태를 변경할 수 없습니다."),
     REQUIRED_FAILURE_REASON(400,  "결제 실패 이유를 제공해야 합니다."),
     MISMATCH(400,  "두 값이 일치하지 않습니다."),
+    ALREADY_EXISTS_REVIEW(400,  "이미 존재하는 리뷰입니다."),
 
     /*  401 UNAUTHORIZED : 인증 안됨  */
     UNAUTHORIZED(401, "인증되지 않았습니다."),

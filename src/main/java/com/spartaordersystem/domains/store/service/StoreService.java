@@ -40,6 +40,8 @@ public class StoreService {
                 .phoneNumber(requestDto.getPhoneNumber())
                 .openTime(requestDto.getOpenTime())
                 .closeTime(requestDto.getCloseTime())
+                .avgStar(0.0)
+                .reviewCount(0)
                 .storeStatus(StoreStatus.CLOSE)
                 .user(user)
                 .build();
