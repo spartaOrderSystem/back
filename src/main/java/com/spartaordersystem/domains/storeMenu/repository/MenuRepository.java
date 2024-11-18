@@ -10,6 +10,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface MenuRepository extends JpaRepository<StoreMenu, UUID> {
+public interface MenuRepository extends JpaRepository<StoreMenu, UUID>, MenuRepositoryCustom {
     List<StoreMenu> findByStoreAndMenuStatusAndIsDeletedFalse(Store store, MenuStatus menuStatus);
 }
