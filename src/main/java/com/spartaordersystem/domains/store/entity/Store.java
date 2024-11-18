@@ -61,6 +61,12 @@ public class Store extends BaseAudit {
     private ZonedDateTime closeTime;
 
     @Column(nullable = false)
+    private double avgStar = 0.0;
+
+    @Column(nullable = false)
+    private int reviewCount = 0;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private StoreStatus storeStatus;
 
@@ -83,7 +89,7 @@ public class Store extends BaseAudit {
 
 
     @Builder
-    public Store(User user, String title, String address, String phoneNumber, ZonedDateTime openTime, ZonedDateTime closeTime, StoreStatus storeStatus, Category category) {
+    public Store(User user, String title, String address, String phoneNumber, ZonedDateTime openTime, ZonedDateTime closeTime, double avgStar, int reviewCount, StoreStatus storeStatus, Category category) {
         this.user = user;
         this.title = title;
         this.address = address;
@@ -124,5 +130,19 @@ public class Store extends BaseAudit {
 
     public void setStoreStatus(StoreStatus storeStatus) {
         this.storeStatus = storeStatus;
+    }
+
+    public void updateAvgStar(int star, boolean isCreated) {
+        if (isCreated) {
+            this.avgStar = ((this.avgStar * this.reviewCount) + star) / (this.reviewCount + 1);
+            this.reviewCount++;
+        } else {
+            this.avgStar = ((this.avgStar * this.reviewCount) - star) / (this.reviewCount - 1);
+            this.reviewCount--;
+
+            if (this.reviewCount == 0) {
+                this.avgStar = 0.0;
+            }
+        }
     }
 }
