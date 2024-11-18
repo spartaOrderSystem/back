@@ -74,8 +74,7 @@ public class ReviewService {
 
     @Transactional
     public UpdateReviewDto.ResponseDto updateReview(User user, UUID storeId, UUID reviewId, UpdateReviewDto.RequestDto requestDto) {
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+        Review review = getReview(reviewId);
 
         if (!review.getUser().getId().equals(user.getId())) {
             throw new CustomException(ErrorCode.USER_MISMATCH);
@@ -107,7 +106,7 @@ public class ReviewService {
 
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
-        Page<Review> reviewPage = reviewRepository.findByUser(user, pageable);
+        Page<Review> reviewPage = reviewRepository.findByUserAndIsDeletedFalse(user, pageable);
 
         return reviewPage.map(review -> GetReviewDto.ResponseDto.builder()
                 .reviewId(review.getId())
@@ -131,7 +130,7 @@ public class ReviewService {
 
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
-        Page<Review> reviewPage = reviewRepository.findByStore(store, pageable);
+        Page<Review> reviewPage = reviewRepository.findByStoreAndIsDeletedFalse(store, pageable);
 
         return reviewPage.map(review -> GetReviewDto.ResponseDto.builder()
                 .reviewId(review.getId())
@@ -140,6 +139,24 @@ public class ReviewService {
                 .createdAt(review.getCreatedAt())
                 .userName(review.getUser().getNickname())
                 .build());
+    }
+
+    @Transactional
+    public void deleteReview(User user, UUID reviewId) {
+        Review review = getReview(reviewId);
+
+        if (review.isDeleted()) {
+            throw new CustomException(ErrorCode.ALREADY_DELETED_REVIEW);
+        }
+
+        review.setDeleted(user.getUsername());
+        review.getStore().updateAvgStar(review.getStar(), false);
+        reviewRepository.save(review);
+    }
+
+    private Review getReview(UUID reviewId) {
+        return reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
     }
 
     private void checkReviewAlreadyExists(Order order) {
