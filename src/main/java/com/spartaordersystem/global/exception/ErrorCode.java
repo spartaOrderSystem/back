@@ -20,6 +20,7 @@ public enum ErrorCode {
     REQUIRED_FAILURE_REASON(400,  "결제 실패 이유를 제공해야 합니다."),
     MISMATCH(400,  "두 값이 일치하지 않습니다."),
     ALREADY_EXISTS_REVIEW(400,  "이미 존재하는 리뷰입니다."),
+    ALREADY_DELETED_REVIEW(400,  "이미 삭제된 리뷰입니다."),
     USER_MISMATCH(400,  "두 유저 아이디가 일치하지 않습니다."),
     STORE_MISMATCH(400,  "두 스토어 아이디가 일치하지 않습니다."),
     ORDER_MISMATCH(400,  "두 오더 아이디가 일치하지 않습니다."),

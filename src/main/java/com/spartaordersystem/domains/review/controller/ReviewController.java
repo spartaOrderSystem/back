@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -71,6 +72,16 @@ public class ReviewController {
     ) {
         Page<GetReviewDto.ResponseDto> responseDtoList = reviewService.getStoreReviewList(storeId, page, size);
         BaseResponse response = BaseResponse.toSuccessResponse("가게 리뷰 목록 조회 성공", responseDtoList);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/reviews/{reviewId}")
+    public ResponseEntity<BaseResponse> deleteReview(
+            @AuthenticationPrincipal User user,
+            @PathVariable UUID reviewId
+    ) {
+        reviewService.deleteReview(user, reviewId);
+        BaseResponse response = BaseResponse.toSuccessResponse("리뷰 삭제");
         return ResponseEntity.ok(response);
     }
 }
