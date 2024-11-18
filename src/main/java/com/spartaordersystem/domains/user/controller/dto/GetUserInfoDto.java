@@ -17,7 +17,7 @@ public class GetUserInfoDto {
         private String username;
         private String nickname;
         private String role;
-        // TODO : 사용자 주소도 반환하려고 했는데, UserAddress 도메인에 질문드릴 게 있어 일단 보류
+        // TODO : 사용자 주소도 반환하려고 했는데, userAddress 도메인에 질문드릴 게 있어 일단 보류
 
         public static ResponseDto toDto(User user) {
             return ResponseDto.builder()

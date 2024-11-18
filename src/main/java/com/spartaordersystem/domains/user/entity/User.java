@@ -1,6 +1,6 @@
 package com.spartaordersystem.domains.user.entity;
 
-import com.spartaordersystem.domains.UserAddress.entity.UserAddress;
+import com.spartaordersystem.domains.userAddress.entity.UserAddress;
 import com.spartaordersystem.global.common.BaseAudit;
 import com.spartaordersystem.global.security.user.UserRoleConverter;
 import com.spartaordersystem.global.security.user.UserRoleEnum;
