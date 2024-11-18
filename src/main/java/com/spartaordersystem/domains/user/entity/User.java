@@ -40,6 +40,9 @@ public class User extends BaseAudit {
     @JoinColumn(name = "user_address_id")
     private UserAddress userAddress;
 
+    @Column(nullable = false)
+    private boolean isDeleted = false;
+
     @Builder
     public User(String username, String password, UserRoleEnum role, String nickname) {
         this.username = username;
@@ -53,6 +56,6 @@ public class User extends BaseAudit {
     }
 
     /**
-     * 저희 삭제 소프트딜리트에요  없으셔서 주석 남깁니다! 잊으시면 안돼요!!
+     * 저희 삭제 소프트딜리트에요  없으셔서 주석 남깁니다! 잊으시면 안돼요!! 넵!!
      */
 }
