@@ -29,7 +29,7 @@ public enum ErrorCode {
     ACCESS_DENIED(404, "접근 권한이 없습니다."),
     USER_NOT_FOUND(404, "유저를 찾을 수 없습니다."),
     CATEGORY_NOT_FOUND(404, "카테고리를 찾을 수 없습니다."),
-    STORE_NOT_FOUND(404, "카테고리를 찾을 수 없습니다."),
+    STORE_NOT_FOUND(404, "가게를 찾을 수 없습니다."),
     MENU_NOT_FOUND(404, "메뉴를 찾을 수 없습니다."),
     ORDER_NOT_FOUND(404, "주문내역을 찾을 수 없습니다."),
     PAYMENT_NOT_FOUND(404, "결제내역을 찾을 수 없습니다."),
