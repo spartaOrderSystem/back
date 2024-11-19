@@ -11,12 +11,18 @@
 ![1_주문 시스템 프로젝트 erd](https://github.com/user-attachments/assets/d3ccf4d4-f674-42f6-8e55-c06ebe240123)
 
 
+
+
 ### API 설계
 https://teamsparta.notion.site/API-384fcbad127648b5999562b3ea679bed
 
 
+
+
 ### 아키텍처 설계
 ![image](https://github.com/user-attachments/assets/f1974a34-f4e8-45c9-a547-116b673d826d)
+
+
 
 
 
@@ -30,9 +36,14 @@ https://teamsparta.notion.site/API-384fcbad127648b5999562b3ea679bed
 > git clone https://github.com/spartaOrderSystem/back.git  
 
 ![image](https://github.com/user-attachments/assets/0cfe57e3-bc5e-44a7-8db1-197aa9482109)
+
+
 포스트맨에서 테스트 시 위 순서대로 실행 후 오더 및 리뷰, 결제 기능을 사용해야합니다.
 **혹시라도 EC2에서 포스트맨이 동작하지 않는다면**
 제출된 "프로젝트 결과물 정리본 노션"에 환경변수를 기입해 두었습니다.
+
+
+
 
 ### 기술 스택
 #### 백엔드
