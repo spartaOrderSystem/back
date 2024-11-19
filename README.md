@@ -29,6 +29,9 @@ https://teamsparta.notion.site/API-384fcbad127648b5999562b3ea679bed
 > 인텔리제이 터미널 \
 > git clone https://github.com/spartaOrderSystem/back.git  
 
+![image](https://github.com/user-attachments/assets/0cfe57e3-bc5e-44a7-8db1-197aa9482109)
+포스트맨에서 테스트 시 위 순서대로 실행 후 오더 및 리뷰, 결제 기능을 사용해야합니다.
+
 ### 기술 스택
 #### 백엔드
 - JAVA17
