@@ -15,8 +15,12 @@
 
 ### API 설계
 https://teamsparta.notion.site/API-384fcbad127648b5999562b3ea679bed
-
-
+- 주요기능
+  - 카테고리 : 등록, 조회, 수정
+  - 가게 : 등록, 조회, 수정, 삭제, 조건부 검색
+  - 메뉴 : 등록, 조회, 수정, 삭제, 조건부 검색, AI 기반 설명글 생성
+  - 주문 : 등록, 조회, 수정
+  - 그 외 사용자, 리뷰, 결제 도메인의 주요기능들 구현
 
 
 ### 아키텍처 설계
@@ -50,7 +54,10 @@ https://teamsparta.notion.site/API-384fcbad127648b5999562b3ea679bed
 ### 기술 스택
 #### 백엔드
 - JAVA17
-- Spring Boot 3.3.x  (Spring Data JPA, Spring Security)
+- Spring Boot 3.3.x
+  - Spring Security
+  - Spring Data JPA
+  - QueryDsl
 - PostgreSQL
 
 #### 인프라
@@ -61,6 +68,7 @@ https://teamsparta.notion.site/API-384fcbad127648b5999562b3ea679bed
 - GIT, GitHub
 - SLACK
 - Postman
+- Notion
 
 #### API
 - GEMINI API
